@@ -28,7 +28,7 @@
 
     },
     "require": {
-        "pimple/pimple": "1.*",
+        "php": ">=5.3.3",
         "g4/profiler": "*",
         "g4/utility": "*"
     }
