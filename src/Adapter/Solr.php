@@ -2,25 +2,33 @@
 
 namespace G4\Log\Adapter;
 
-class Solr extends AdapterAbstract
+use G4\Log\AdapterInterface;
+
+class Solr implements AdapterInterface
 {
 
+    /**
+     * @var array
+     */
     private $params;
 
-
-    public function __construct($params)
+    /**
+     * Solr constructor.
+     * @param array $params
+     */
+    public function __construct(array $params)
     {
         $this->params = $params;
     }
 
-    public function save()
+    public function save($data)
     {
-        $this->getMapper()->update($this->getDomain());
+        $this->getMapper()->update($data);
     }
 
-    public function saveAppend()
+    public function saveAppend($data)
     {
-        $this->getMapper()->updateAdd($this->getDomain());
+        $this->getMapper()->updateAdd($data);
     }
 
     private function getMapper()

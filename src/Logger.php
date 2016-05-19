@@ -5,23 +5,27 @@ namespace G4\Log;
 class Logger
 {
 
+    /**
+     * @var AdapterInterface
+     */
+    private $adapter;
 
-    public function __construct(\G4\Log\Adapter\Solr $adapter)
+    /**
+     * Logger constructor.
+     * @param AdapterInterface $adapter
+     */
+    public function __construct(\G4\Log\AdapterInterface $adapter)
     {
         $this->adapter = $adapter;
     }
 
     public function log(\G4\Profiler\Data\LoggerAbstract $data)
     {
-        $this->adapter
-            ->setDomain($data)
-            ->save();
+        $this->adapter->save($data);
     }
 
     public function logAppend(\G4\Profiler\Data\LoggerAbstract $data)
     {
-        $this->adapter
-            ->setDomain($data)
-            ->saveAppend();
+        $this->adapter->saveAppend($data);
     }
 }
