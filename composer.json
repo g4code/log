@@ -1,9 +1,10 @@
 {
     "name": "g4/log",
-    "description": "g4 log writer",
+    "description": "Writes your logs to files, databases, search engines...",
     "keywords": [
         "log",
-        "writeer",
+        "logger",
+        "writer",
         "debug"
     ],
     "license": "MIT",
@@ -28,8 +29,12 @@
 
     },
     "require": {
-        "php": ">=5.3.3",
-        "g4/profiler": "*",
-        "g4/utility": "*"
+        "php"                        : ">=5.3.3",
+        "elasticsearch/elasticsearch": "~2.0",
+        "g4/profiler"                : "*",
+        "g4/utility"                 : "*"
+    },
+    "suggest": {
+        "elasticsearch/elasticsearch": "Allow sending log messages to an Elasticsearch server"
     }
 }
