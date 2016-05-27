@@ -26,15 +26,19 @@
         "psr-4": {"G4\\Log\\": "src/"}
     },
     "require-dev": {
-
+        "jakub-onderka/php-parallel-lint": "^0.9.2"
     },
     "require": {
         "php"                        : ">=5.3.3",
-        "elasticsearch/elasticsearch": "~2.0",
         "g4/profiler"                : "*",
         "g4/utility"                 : "*"
     },
     "suggest": {
         "elasticsearch/elasticsearch": "Allow sending log messages to an Elasticsearch server"
+    },
+    "scripts": {
+        "lint": [
+            "./vendor/bin/parallel-lint ./ --exclude vendor"
+        ]
     }
 }
