@@ -10,6 +10,17 @@ class Elasticsearch implements AdapterInterface
 {
 
     /**
+     * Number of retries if first request fails
+     */
+    const RETRIES = 0;
+
+    /**
+     * Number of seconds for client-side, curl timeouts
+     */
+    const TIMEOUT = 1;
+
+
+    /**
      * @var Client
      */
     private $client;
@@ -32,17 +43,20 @@ class Elasticsearch implements AdapterInterface
      */
     public function __construct(array $hosts, $index, $type)
     {
-        $this->client = ClientBuilder::create()->setHosts($hosts)->build();
         $this->index  = $index;
         $this->type   = $type;
+        $this->client = ClientBuilder::create()
+            ->setHosts($hosts)
+            ->setRetries(self::RETRIES)
+            ->build();
     }
 
     public function save($data)
     {
         try {
             $this->client->index($this->prepareForIndexing($data->getRawData()));
-        } catch (\Exception $e) {
-            throw new \Exception($e->getMessage(), $e->getCode());
+        } catch (\Exception $exception) {
+            error_log ($exception->getMessage(), 0);
         }
     }
 
@@ -50,8 +64,8 @@ class Elasticsearch implements AdapterInterface
     {
         try {
             $this->client->update($this->prepareForUpdate($data->getRawData()));
-        } catch (\Exception $e) {
-            throw new \Exception($e->getMessage(), $e->getCode());
+        } catch (\Exception $exception) {
+            error_log ($exception->getMessage(), 0);
         }
     }
 
@@ -62,6 +76,10 @@ class Elasticsearch implements AdapterInterface
             'type'  => $this->type,
             'id'    => $data['id'],
             'body'  => $data,
+            'client' => [
+                'timeout'         => self::TIMEOUT,
+                'connect_timeout' => self::TIMEOUT,
+            ],
         ];
     }
 
@@ -73,6 +91,10 @@ class Elasticsearch implements AdapterInterface
             'id'    => $data['id'],
             'body'  => [
                 'doc' => $data,
+            ],
+            'client' => [
+                'timeout'         => self::TIMEOUT,
+                'connect_timeout' => self::TIMEOUT,
             ],
         ];
     }
