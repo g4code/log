@@ -21,11 +21,11 @@ class Logger
 
     public function log(\G4\Profiler\Data\LoggerAbstract $data)
     {
-        $this->adapter->save($data);
+        $this->adapter->save($data->getRawData());
     }
 
     public function logAppend(\G4\Profiler\Data\LoggerAbstract $data)
     {
-        $this->adapter->saveAppend($data);
+        $this->adapter->saveAppend($data->getRawData());
     }
 }

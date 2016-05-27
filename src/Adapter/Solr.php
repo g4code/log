@@ -28,20 +28,19 @@ class Solr implements AdapterInterface
         $this->collection = $collection;
     }
 
-    public function save($data)
+    public function save(array $data)
     {
-        $this->send([$data->getRawData()]);
+        $this->send([$data]);
     }
 
-    public function saveAppend($data)
+    public function saveAppend(array $data)
     {
-        $rawData = $data->getRawData();
-        array_walk($rawData, function(&$value, $key){
+        array_walk($data, function(&$value, $key){
             if ($key != self::IDENTIFIER_KEY) {
                 $value = ['add' => $value];
             }
         });
-        $this->send([$rawData]);
+        $this->send([$data]);
     }
 
     private function buildUrl()

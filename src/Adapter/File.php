@@ -24,17 +24,17 @@ class File implements AdapterInterface
     /**
      * @param $data
      */
-    public function save($data)
+    public function save(array $data)
     {
-        error_log("\n" . $this->format($data->getRawData()) . "\n", 3, $this->filename);
+        error_log("\n" . $this->format($data) . "\n", 3, $this->filename);
     }
 
     /**
      * @param $data
      */
-    public function saveAppend($data)
+    public function saveAppend(array $data)
     {
-        error_log($this->format($data->getRawData()) . "\n", 3, $this->filename);
+        error_log($this->format($data) . "\n", 3, $this->filename);
     }
 
     /**

@@ -5,7 +5,7 @@ namespace G4\Log;
 interface AdapterInterface
 {
 
-    public function save($data);
+    public function save(array $data);
 
-    public function saveAppend($data);
+    public function saveAppend(array $data);
 }

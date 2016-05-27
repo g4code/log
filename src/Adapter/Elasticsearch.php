@@ -51,19 +51,19 @@ class Elasticsearch implements AdapterInterface
             ->build();
     }
 
-    public function save($data)
+    public function save(array $data)
     {
         try {
-            $this->client->index($this->prepareForIndexing($data->getRawData()));
+            $this->client->index($this->prepareForIndexing($data));
         } catch (\Exception $exception) {
             error_log ($exception->getMessage(), 0);
         }
     }
 
-    public function saveAppend($data)
+    public function saveAppend(array $data)
     {
         try {
-            $this->client->update($this->prepareForUpdate($data->getRawData()));
+            $this->client->update($this->prepareForUpdate($data));
         } catch (\Exception $exception) {
             error_log ($exception->getMessage(), 0);
         }
