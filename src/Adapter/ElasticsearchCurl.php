@@ -8,6 +8,9 @@ class ElasticsearchCurl implements AdapterInterface
 {
 
     const TIMEOUT = 1;
+    const METHOD_DELETE = 'DELETE';
+    const METHOD_POST =   'POST';
+
 
     /**
      * @var string
@@ -37,14 +40,19 @@ class ElasticsearchCurl implements AdapterInterface
         $this->host     = $hosts[array_rand(array_filter($hosts))];
     }
 
+    public function deleteByQuery(array $data)
+    {
+        $this->send($data,  $this->buildUrl('_query'), self::METHOD_DELETE);
+    }
+
     public function save(array $data)
     {
-        $this->send($data, $this->buildUrl($data['id']));
+        $this->send($data, $this->buildUrl($data['id']), self::METHOD_POST);
     }
 
     public function saveAppend(array $data)
     {
-        $this->send(['doc' => $data], $this->buildUrl($data['id'], '_update'));
+        $this->send(['doc' => $data], $this->buildUrl($data['id'], '_update'), self::METHOD_POST);
     }
 
     private function buildUrl($id, $update = null)
@@ -58,11 +66,11 @@ class ElasticsearchCurl implements AdapterInterface
         ]);
     }
 
-    private function send(array $data, $url)
+    private function send(array $data, $url, $method)
     {
         $ch = curl_init($url);
         curl_setopt_array($ch, [
-            CURLOPT_CUSTOMREQUEST  => 'POST',
+            CURLOPT_CUSTOMREQUEST  => $method,
             CURLOPT_POSTFIELDS     => json_encode($data),
             CURLOPT_RETURNTRANSFER => 1,
             CURLOPT_TIMEOUT        => self::TIMEOUT,
