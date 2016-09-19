@@ -2,9 +2,10 @@
 
 namespace G4\Log\Adapter;
 
-use G4\Log\AdapterInterface;
+use G4\Log\AdapterAbstract;
 
-class File implements AdapterInterface
+// @TODO: Drasko - implement saveInOneCall()
+class File extends AdapterAbstract
 {
 
     /**
@@ -35,11 +36,6 @@ class File implements AdapterInterface
     public function saveAppend(array $data)
     {
         error_log($this->format($data) . "\n", 3, $this->filename);
-    }
-
-    public function saveInOneCall()
-    {
-//        $this->shouldSaveInOneCall = true;
     }
 
     /**
