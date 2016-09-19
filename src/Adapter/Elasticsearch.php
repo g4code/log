@@ -44,8 +44,8 @@ class Elasticsearch extends AdapterAbstract
      */
     public function __construct(array $hosts, $index, $type)
     {
-        $this->index                = $index;
-        $this->type                 = $type;
+        $this->index = $index;
+        $this->type  = $type;
 
         $this->client = ClientBuilder::create()
             ->setHosts($hosts)

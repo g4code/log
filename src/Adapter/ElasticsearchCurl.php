@@ -2,9 +2,9 @@
 
 namespace G4\Log\Adapter;
 
-use G4\Log\AdapterInterface;
+use G4\Log\AdapterAbstract;
 
-class ElasticsearchCurl implements AdapterInterface
+class ElasticsearchCurl extends AdapterAbstract
 {
 
     const TIMEOUT = 1;
@@ -28,11 +28,6 @@ class ElasticsearchCurl implements AdapterInterface
     private $type;
 
     /**
-     * @var bool
-     */
-    private $shouldSaveInOneCall;
-
-    /**
      * Elasticsearch constructor.
      * @param array $hosts
      * @param string $index
@@ -52,17 +47,16 @@ class ElasticsearchCurl implements AdapterInterface
 
     public function save(array $data)
     {
-        $this->send($data, $this->buildUrl($data['id']), self::METHOD_POST);
+        $this->shouldSaveInOneCall()
+            ? $this->appendData($data)
+            : $this->send($data, $this->buildUrl($data['id']), self::METHOD_POST);
     }
 
     public function saveAppend(array $data)
     {
-        $this->send(['doc' => $data], $this->buildUrl($data['id'], '_update'), self::METHOD_POST);
-    }
-
-    public function saveInOneCall()
-    {
-        $this->shouldSaveInOneCall = true;
+        $this->shouldSaveInOneCall()
+            ? $this->appendData($data)->send($this->getData(), $this->buildUrl($data['id']), self::METHOD_POST)
+            : $this->send(['doc' => $data], $this->buildUrl($data['id'], '_update'), self::METHOD_POST);
     }
 
     private function buildUrl($id, $update = null)
