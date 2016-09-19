@@ -28,6 +28,11 @@ class ElasticsearchCurl implements AdapterInterface
     private $type;
 
     /**
+     * @var bool
+     */
+    private $shouldSaveInOneCall;
+
+    /**
      * Elasticsearch constructor.
      * @param array $hosts
      * @param string $index
@@ -53,6 +58,11 @@ class ElasticsearchCurl implements AdapterInterface
     public function saveAppend(array $data)
     {
         $this->send(['doc' => $data], $this->buildUrl($data['id'], '_update'), self::METHOD_POST);
+    }
+
+    public function saveInOneCall()
+    {
+        $this->shouldSaveInOneCall = true;
     }
 
     private function buildUrl($id, $update = null)

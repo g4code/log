@@ -2,11 +2,11 @@
 
 namespace G4\Log\Adapter;
 
-use G4\Log\AdapterInterface;
+use G4\Log\AdapterAbstract;
 use Elasticsearch\ClientBuilder;
 use Elasticsearch\Client;
 
-class Elasticsearch implements AdapterInterface
+class Elasticsearch extends AdapterAbstract
 {
 
     /**
@@ -35,6 +35,7 @@ class Elasticsearch implements AdapterInterface
      */
     private $type;
 
+
     /**
      * Elasticsearch constructor.
      * @param array $hosts
@@ -43,18 +44,22 @@ class Elasticsearch implements AdapterInterface
      */
     public function __construct(array $hosts, $index, $type)
     {
-        $this->index  = $index;
-        $this->type   = $type;
+        $this->index                = $index;
+        $this->type                 = $type;
+
         $this->client = ClientBuilder::create()
             ->setHosts($hosts)
             ->setRetries(self::RETRIES)
             ->build();
+
     }
 
     public function save(array $data)
     {
         try {
-            $this->client->index($this->prepareForIndexing($data));
+            $this->shouldSaveInOneCall()
+                ? $this->appendData($data)
+                : $this->doIndexing($data);
         } catch (\Exception $exception) {
             error_log ($exception->getMessage(), 0);
         }
@@ -63,15 +68,17 @@ class Elasticsearch implements AdapterInterface
     public function saveAppend(array $data)
     {
         try {
-            $this->client->update($this->prepareForUpdate($data));
+            $this->shouldSaveInOneCall()
+                ? $this->appendData($data)->doIndexing($this->getData())
+                : $this->doUpdate($data);
         } catch (\Exception $exception) {
             error_log ($exception->getMessage(), 0);
         }
     }
 
-    private function prepareForIndexing(array $data)
+    private function doIndexing(array $data)
     {
-        return [
+        $this->client->index([
             'index' => $this->index,
             'type'  => $this->type,
             'id'    => $data['id'],
@@ -80,12 +87,12 @@ class Elasticsearch implements AdapterInterface
                 'timeout'         => self::TIMEOUT,
                 'connect_timeout' => self::TIMEOUT,
             ],
-        ];
+        ]);
     }
 
-    private function prepareForUpdate(array $data)
+    private function doUpdate(array $data)
     {
-        return [
+        $this->client->update([
             'index' => $this->index,
             'type'  => $this->type,
             'id'    => $data['id'],
@@ -96,6 +103,6 @@ class Elasticsearch implements AdapterInterface
                 'timeout'         => self::TIMEOUT,
                 'connect_timeout' => self::TIMEOUT,
             ],
-        ];
+        ]);
     }
 }

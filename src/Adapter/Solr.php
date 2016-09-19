@@ -43,6 +43,11 @@ class Solr implements AdapterInterface
         $this->send([$data]);
     }
 
+    public function saveInOneCall()
+    {
+//        $this->shouldSaveInOneCall = true;
+    }
+
     private function buildUrl()
     {
         if ($this->url === null) {

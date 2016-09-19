@@ -37,6 +37,11 @@ class File implements AdapterInterface
         error_log($this->format($data) . "\n", 3, $this->filename);
     }
 
+    public function saveInOneCall()
+    {
+//        $this->shouldSaveInOneCall = true;
+    }
+
     /**
      * @param array $rawData
      * @return string
