@@ -83,10 +83,7 @@ class Elasticsearch extends AdapterAbstract
             'type'  => $this->type,
             'id'    => $data['id'],
             'body'  => $data,
-            'client' => [
-                'timeout'         => self::TIMEOUT,
-                'connect_timeout' => self::TIMEOUT,
-            ],
+            'client' => $this->getClientOptions(),
         ]);
     }
 
@@ -99,10 +96,19 @@ class Elasticsearch extends AdapterAbstract
             'body'  => [
                 'doc' => $data,
             ],
-            'client' => [
-                'timeout'         => self::TIMEOUT,
-                'connect_timeout' => self::TIMEOUT,
-            ],
+            'client' => $this->getClientOptions(),
         ]);
+    }
+
+    private function getClientOptions()
+    {
+        $clientOptions = [
+            'timeout'         => self::TIMEOUT,
+            'connect_timeout' => self::TIMEOUT,
+        ];
+        if ($this->shouldBeLazy() && $this->shouldSaveInOneCall()) {
+            $clientOptions['future'] = 'lazy';
+        }
+        return $clientOptions;
     }
 }
