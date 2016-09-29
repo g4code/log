@@ -2,9 +2,9 @@
 
 namespace G4\Log\Adapter;
 
-use G4\Log\AdapterInterface;
+use G4\Log\AdapterAbstract;
 
-class File implements AdapterInterface
+class File extends AdapterAbstract
 {
 
     /**
@@ -26,7 +26,9 @@ class File implements AdapterInterface
      */
     public function save(array $data)
     {
-        error_log("\n" . $this->format($data) . "\n", 3, $this->filename);
+        $this->shouldSaveInOneCall()
+            ? $this->appendData($data)
+            : $this->errorLog("\n" . $this->format($data) . "\n");
     }
 
     /**
@@ -34,7 +36,14 @@ class File implements AdapterInterface
      */
     public function saveAppend(array $data)
     {
-        error_log($this->format($data) . "\n", 3, $this->filename);
+        $this->shouldSaveInOneCall()
+            ? $this->appendData($data)->errorLog("\n" . $this->format($this->getData()) . "\n")
+            : $this->errorLog($this->format($data) . "\n");
+    }
+
+    private function errorLog($formattedData)
+    {
+        error_log($formattedData, 3, $this->filename);
     }
 
     /**

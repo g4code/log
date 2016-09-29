@@ -2,9 +2,9 @@
 
 namespace G4\Log\Adapter;
 
-use G4\Log\AdapterInterface;
+use G4\Log\AdapterAbstract;
 
-class Solr implements AdapterInterface
+class Solr extends AdapterAbstract
 {
 
     const TIMEOUT = 1;
@@ -30,17 +30,23 @@ class Solr implements AdapterInterface
 
     public function save(array $data)
     {
-        $this->send([$data]);
+        $this->shouldSaveInOneCall()
+            ? $this->appendData($data)
+            : $this->send([$data]);
     }
 
     public function saveAppend(array $data)
     {
-        array_walk($data, function(&$value, $key){
-            if ($key != self::IDENTIFIER_KEY) {
-                $value = ['add' => $value];
-            }
-        });
-        $this->send([$data]);
+        if ($this->shouldSaveInOneCall()) {
+            $this->appendData($data)->send([$this->getData()]);
+        } else {
+            array_walk($data, function(&$value, $key){
+                if ($key != self::IDENTIFIER_KEY) {
+                    $value = ['add' => $value];
+                }
+            });
+            $this->send([$data]);
+        }
     }
 
     private function buildUrl()
