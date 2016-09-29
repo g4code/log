@@ -28,4 +28,9 @@ class Logger
     {
         $this->adapter->saveAppend($data->getRawData());
     }
+
+    public function runtimeLog($var, $tag = false)
+    {
+        $this->log(new \G4\Profiler\Data\RuntimeLog($var, $tag));
+    }
 }
