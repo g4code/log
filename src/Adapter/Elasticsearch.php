@@ -54,6 +54,11 @@ class Elasticsearch extends AdapterAbstract
 
     }
 
+    public function deleteIndex()
+    {
+        return $this->client->indices()->delete(['index' => $this->index]);
+    }
+
     public function save(array $data)
     {
         try {
