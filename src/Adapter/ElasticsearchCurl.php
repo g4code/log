@@ -40,6 +40,11 @@ class ElasticsearchCurl extends AdapterAbstract
         $this->host     = $hosts[array_rand(array_filter($hosts))];
     }
 
+    public function deleteIndex()
+    {
+        $this->send([],  join('/', [$this->host, $this->index]), self::METHOD_DELETE);
+    }
+
     public function deleteByQuery(array $data)
     {
         $this->send($data,  $this->buildUrl('_query'), self::METHOD_DELETE);
