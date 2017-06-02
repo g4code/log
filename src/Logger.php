@@ -5,6 +5,8 @@ namespace G4\Log;
 class Logger
 {
 
+    const DEFAULT_LINE = 2;
+
     /**
      * @var AdapterInterface
      */
@@ -29,8 +31,8 @@ class Logger
         $this->adapter->saveAppend($data->getRawData());
     }
 
-    public function runtimeLog($var, $tag = false)
+    public function runtimeLog($var, $tag = false, $index = self::DEFAULT_LINE)
     {
-        $this->log(new \G4\Profiler\Data\RuntimeLog($var, $tag));
+        $this->log(new \G4\Profiler\Data\RuntimeLog($var, $tag, $index));
     }
 }
