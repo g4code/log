@@ -35,12 +35,4 @@ class Logger
     {
         $this->log(new \G4\Profiler\Data\RuntimeLog($var, $tag, $index));
     }
-
-    public function logSecurity(\G4\Profiler\Data\LoggerAbstract $data)
-    {
-        $rawData = $data->getRawData();
-        if (in_array($rawData['code'], [401, 403])) {
-            $this->adapter->save($data->getRawData());
-        }
-    }
 }
