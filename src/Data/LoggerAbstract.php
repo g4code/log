@@ -11,6 +11,11 @@ abstract class LoggerAbstract
     const X_ND_PREFIX = 'X_ND';
 
     /**
+     * @var int
+     */
+    private $id;
+
+    /**
      * @var float
      */
     private $startTime;
@@ -31,6 +36,20 @@ abstract class LoggerAbstract
     {
         $this->startTime = $startTime;
         return $this;
+    }
+    /**
+     * @param int $id
+     * @return $this
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+        return $this;
+    }
+
+    public function getId()
+    {
+        return $this->id;
     }
 
     /**
