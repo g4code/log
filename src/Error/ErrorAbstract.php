@@ -112,7 +112,7 @@ abstract class ErrorAbstract
     public function log()
     {
         if ($this->logger instanceof Logger) {
-            $loggerData = new \G4\Profiler\Data\Error();
+            $loggerData = new \G4\Log\Data\Error();
             $loggerData
                 ->setErrorData($this->errorData);
             $this->logger->log($loggerData);

@@ -21,18 +21,18 @@ class Logger
         $this->adapter = $adapter;
     }
 
-    public function log(\G4\Profiler\Data\LoggerAbstract $data)
+    public function log(\G4\Log\Data\LoggerAbstract $data)
     {
         $this->adapter->save($data->getRawData());
     }
 
-    public function logAppend(\G4\Profiler\Data\LoggerAbstract $data)
+    public function logAppend(\G4\Log\Data\LoggerAbstract $data)
     {
         $this->adapter->saveAppend($data->getRawData());
     }
 
     public function runtimeLog($var, $tag = false, $index = self::DEFAULT_LINE)
     {
-        $this->log(new \G4\Profiler\Data\RuntimeLog($var, $tag, $index));
+        $this->log(new \G4\Log\Data\RuntimeLog($var, $tag, $index));
     }
 }

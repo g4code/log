@@ -37,7 +37,7 @@ class Presenter
 
     /**
      * @param ErrorData $data
-     * @return \G4\Profiler\Presenter
+     * @return \G4\Log\Error\Presenter
      */
     public function setData(ErrorData $data)
     {

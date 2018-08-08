@@ -18,7 +18,7 @@ class Request extends RequestResponseAbstarct
 
     /**
      * @param array $paramsToObfuscate
-     * @return \G4\Profiler\Data\Request
+     * @return \G4\Log\Data\Request
      */
     public function setParamsToObfuscate(array $paramsToObfuscate)
     {

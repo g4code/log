@@ -9,7 +9,6 @@
 
 namespace G4\Log;
 
-use G4\Profiler\Debug;
 use G4\Utility\Tools;
 
 class Writer

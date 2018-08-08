@@ -1,6 +1,6 @@
 <?php
 
-namespace G4\Profiler\Data;
+namespace G4\Log\Data;
 
 use G4\Runner\Profiler;
 
