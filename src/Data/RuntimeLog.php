@@ -52,6 +52,7 @@ class RuntimeLog extends LoggerAbstract
             'client_ip' => $this->getClientIp(),
             'app_name'  => $this->getAppName(),
             'headers'   => \json_encode($this->getXNDParameters()),
+            'uuid'      => $this->getUuid(),
         ];
     }
 }
