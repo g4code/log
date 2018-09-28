@@ -1,4 +1,4 @@
-<?php
+<?php /** @noinspection PhpLanguageLevelInspection */
 
 namespace G4\Log\Data;
 
@@ -25,8 +25,14 @@ class TaskerExecution extends LoggerAbstract
             'hostname'  => \gethostname(),
             'pid'       => \getmypid(),
             'type'      => self::LOG_TYPE,
-            'memory_peak_usage'  => memory_get_peak_usage(true),
-            'exception'          => $this->exception !== null ? \json_encode($this->exception->getTrace()) : null,
+            'memory_peak_usage'  => memory_get_peak_usage(),
+            'exception' => $this->exception === null ?: \json_encode([
+                    'message' => $this->exception->getMessage(),
+                    'line'    => $this->exception->getLine(),
+                    'code'    => $this->exception->getCode(),
+                    'trace'   => $this->exception->getTrace(),
+                ]
+            ),
 
             'task_id'       => $this->task->getTaskId(),
             'recu_id'       => $this->task->getRecurringId(),
