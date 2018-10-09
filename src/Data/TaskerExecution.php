@@ -17,6 +17,11 @@ class TaskerExecution extends LoggerAbstract
      */
     private $exception;
 
+    /**
+     * @var string
+     */
+    private $logType;
+
     public function getRawData()
     {
         return [
@@ -24,7 +29,7 @@ class TaskerExecution extends LoggerAbstract
             'timestamp' => $this->getJsTimestamp(),
             'hostname'  => \gethostname(),
             'pid'       => \getmypid(),
-            'type'      => self::LOG_TYPE,
+            'type'      => $this->logType?: self::LOG_TYPE,
             'memory_peak_usage'  => memory_get_peak_usage(),
             'exception' => $this->exception === null ?: \json_encode([
                     'message' => $this->exception->getMessage(),
@@ -66,6 +71,12 @@ class TaskerExecution extends LoggerAbstract
     public function setException(\Exception $exception)
     {
         $this->exception = $exception;
+        return $this;
+    }
+
+    public function setLogType($logType)
+    {
+        $this->logType = $logType;
         return $this;
     }
 }
