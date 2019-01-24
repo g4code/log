@@ -33,6 +33,8 @@ class RedisToElastic
 
     public function transferData()
     {
+        $data = $this->redisClient->fetchAndClear($this->batchsize);
+
 
     }
 }
