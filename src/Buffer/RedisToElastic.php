@@ -3,6 +3,7 @@
 namespace G4\Log\Buffer;
 
 use G4\Log\Adapter\ElasticsearchCurl;
+use G4\Log\Adapter\Redis;
 use G4\ValueObject\IntegerNumber;
 
 class RedisToElastic
@@ -23,7 +24,7 @@ class RedisToElastic
      */
     private $redisClient;
 
-    public function __construct(\Redis $redisClient, ElasticsearchCurl $elasticClient, IntegerNumber $batchsize)
+    public function __construct(Redis $redisClient, ElasticsearchCurl $elasticClient, IntegerNumber $batchsize)
     {
         $this->redisClient      = $redisClient;
         $this->elasticClient    = $elasticClient;
