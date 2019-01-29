@@ -31,7 +31,8 @@
     "require": {
         "php"           : ">=5.3.3",
         "g4/runner"     : "*",
-        "g4/utility"    : "*"
+        "g4/utility"    : "*",
+        "g4/value-object" : "2.*"
     },
     "suggest": {
         "elasticsearch/elasticsearch": "Allow sending log messages to an Elasticsearch server"
