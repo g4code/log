@@ -43,31 +43,22 @@ class Redis extends AdapterAbstract
 
     public function save(array $data)
     {
-        try {
-            $this->appendData($data);
-        } catch (\Exception $exception) {
-            error_log ($exception->getMessage(), 0);
-        }
+        $this->shouldSaveInOneCall()
+            ? $this->appendData($data)
+            : $this->appendData($data)->doRPush();
     }
 
     public function saveAppend(array $data)
     {
-        try {
-            $this->appendData($data);
-            $this->doRPush();
-        } catch (\Exception $exception) {
-            error_log ($exception->getMessage(), 0);
-        }
+        $this->shouldSaveInOneCall()
+            ? $this->appendData($data)->doRPush()
+            : $this->doRPush($data);
     }
 
-    //TODO: Drasko - change this - option to save in two calls !
-    public function shouldSaveInOneCall()
+    private function doRPush($data = null)
     {
-        return true;
+        $logData = !empty($data) ? $data : $this->getData();
+        $this->client->rPush((string) $this->key, \json_encode($logData));
     }
 
-    private function doRPush()
-    {
-        $this->client->rPush((string) $this->key, \json_encode($this->getData()));
-    }
 }
