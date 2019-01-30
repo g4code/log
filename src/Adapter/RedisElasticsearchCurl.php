@@ -8,7 +8,8 @@ class RedisElasticsearchCurl  extends AdapterAbstract
 {
     const TIMEOUT = 1;
     const METHOD_POST =   'POST';
-    
+    const BULK = '_bulk';
+
     /**
      * @var string
      */
