@@ -51,13 +51,23 @@ class RedisElasticsearchCurl  extends AdapterAbstract
 
     public function sendAll(array $data)
     {
+        $itemsForBulkInsert = [];
         foreach ($data as $log) {
             $this->setIndex($log['_index']);
             $this->setType($log['_type']);
             unset($log['_index']);
             unset($log['_type']);
-            $this->send($log, $this->buildUrl($log['id']), self::METHOD_POST);
+
+            $itemsForBulkInsert[] = json_encode([
+                'index' => [
+                    '_index' => $this->index,
+                    '_type'  => $this->type,
+                    '_id'    => $log['id']
+                ]
+            ]);
+            $itemsForBulkInsert[] = json_encode($log);
         }
+        $this->send(implode(PHP_EOL, $itemsForBulkInsert) . PHP_EOL, $this->buildBulkUrl(), self::METHOD_POST);
     }
 
 
@@ -72,12 +82,25 @@ class RedisElasticsearchCurl  extends AdapterAbstract
         ]);
     }
 
-    private function send(array $data, $url, $method)
+    private function buildBulkUrl()
     {
+        return join('/', [
+            $this->host,
+            self::BULK
+        ]);
+    }
+
+
+    private function send($data, $url, $method)
+    {
+        $curlPostFieldsData = $data;
+        if(is_array($data)){
+            $curlPostFieldsData = json_encode($data);
+        }
         $ch = curl_init($url);
         curl_setopt_array($ch, [
             CURLOPT_CUSTOMREQUEST  => $method,
-            CURLOPT_POSTFIELDS     => json_encode($data),
+            CURLOPT_POSTFIELDS     => $curlPostFieldsData,
             CURLOPT_RETURNTRANSFER => 1,
             CURLOPT_TIMEOUT        => self::TIMEOUT,
             CURLOPT_URL            => $url,
