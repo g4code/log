@@ -9,6 +9,8 @@ use G4\ValueObject\IntegerNumber;
 class RedisToElastic
 {
 
+    const LOG_TITLE = '[log]';
+
     /**
      * @var IntegerNumber
      */
@@ -24,7 +26,16 @@ class RedisToElastic
      */
     private $redisClient;
 
+    /**
+     * @var array
+     */
     private $data;
+
+    /**
+     * @var int
+     */
+    private $countFromRedis;
+
 
     public function __construct(Redis $redisClient, RedisElasticsearchCurl $elasticClient, IntegerNumber $batchsize)
     {
@@ -36,6 +47,7 @@ class RedisToElastic
     public function transferData()
     {
         $data = $this->redisClient->fetchAndClear($this->batchsize);
+        $this->countFromRedis = count($data);
         if (!empty($data)) {
             foreach ($data as $key => $log) {
                 $logData = json_decode($log, 1);
@@ -51,5 +63,15 @@ class RedisToElastic
         if (!empty($this->data)) {
             $this->elasticClient->sendAll($this->data);
         }
+        return $this;
+    }
+
+    public function getInfo()
+    {
+        echo self::LOG_TITLE . ' The number of ' . (string) $this->redisClient->getKey()
+            . ' logs read from redis: ' . $this->countFromRedis . PHP_EOL;
+        echo self::LOG_TITLE . ' The number of ' . (string) $this->redisClient->getKey()
+            . ' logs inserted in ES: ' . $this->elasticClient->getCount() . PHP_EOL;
+        return $this;
     }
 }

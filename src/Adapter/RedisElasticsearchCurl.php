@@ -26,6 +26,11 @@ class RedisElasticsearchCurl  extends AdapterAbstract
     private $type;
 
     /**
+     * @var int
+     */
+    private $count;
+
+    /**
      * Elasticsearch constructor.
      * @param array $hosts
      * @param string $index
@@ -107,19 +112,28 @@ class RedisElasticsearchCurl  extends AdapterAbstract
             CURLOPT_URL            => $url,
             CURLOPT_HTTPHEADER     => ['Content-Type: application/json'],
         ]);
-        curl_exec($ch);
+        $response = curl_exec($ch);
+        $data = json_decode($response,1);
+        $this->count = count($data['items']);
         curl_close($ch);
     }
 
-    public function setIndex($index)
+    public function getCount()
+    {
+        return isset($this->count) ? $this->count : 0;
+    }
+
+    private function setIndex($index)
     {
         $this->index = $index;
         return $this;
     }
 
-    public function setType($type)
+    private function setType($type)
     {
         $this->type = $type;
         return $this;
     }
+
+
 }
