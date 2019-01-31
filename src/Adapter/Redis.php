@@ -41,6 +41,14 @@ class Redis extends AdapterAbstract
         return $data;
     }
 
+    /**
+     * @return StringLiteral
+     */
+    public function getKey()
+    {
+        return $this->key;
+    }
+
     public function save(array $data)
     {
         try {
@@ -56,9 +64,7 @@ class Redis extends AdapterAbstract
     public function saveAppend(array $data)
     {
         try {
-            $this->shouldSaveInOneCall()
-                ? $this->appendData($data)->doRPush()
-                : $this->doRPush($data);
+            $this->appendData($data)->doRPush();
         } catch (\Exception $exception) {
             error_log ($exception->getMessage(), 0);
         }
