@@ -54,21 +54,23 @@ class Redis extends AdapterAbstract
         try {
             $this->shouldSaveInOneCall()
                 ? $this->appendData($data)
-                : $this->appendData($data)->doRPush();
+                : $this->doRPush(array_merge($this->getData(), $data));
         } catch (\Exception $exception) {
             error_log ($exception->getMessage(), 0);
         }
 
     }
 
+
     public function saveAppend(array $data)
     {
         try {
-            $this->appendData($data)->doRPush();
+            $this->shouldSaveInOneCall()
+                ? $this->appendData($data)->doRPush()
+                : $this->doRPush(array_merge($this->getData(), $data));
         } catch (\Exception $exception) {
             error_log ($exception->getMessage(), 0);
         }
-
     }
 
     private function doRPush($data = null)
