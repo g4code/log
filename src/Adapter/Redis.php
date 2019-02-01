@@ -54,7 +54,7 @@ class Redis extends AdapterAbstract
         try {
             $this->shouldSaveInOneCall()
                 ? $this->appendData($data)
-                : $this->doRPush(array_merge($this->getData(), $data));
+                : $this->appendData($data)->doRPush(array_merge($this->getData(), $data));
         } catch (\Exception $exception) {
             error_log ($exception->getMessage(), 0);
         }
@@ -67,7 +67,7 @@ class Redis extends AdapterAbstract
         try {
             $this->shouldSaveInOneCall()
                 ? $this->appendData($data)->doRPush()
-                : $this->doRPush(array_merge($this->getData(), $data));
+                : $this->appendData($data)->doRPush(array_merge($this->getData(), $data));
         } catch (\Exception $exception) {
             error_log ($exception->getMessage(), 0);
         }
