@@ -3,6 +3,7 @@
 namespace G4\Log\Adapter;
 
 use G4\Log\AdapterAbstract;
+use G4\ValueObject\Uuid;
 
 class RedisElasticsearchCurl  extends AdapterAbstract
 {
@@ -68,7 +69,7 @@ class RedisElasticsearchCurl  extends AdapterAbstract
                 'index' => [
                     '_index' => $this->index,
                     '_type'  => $this->type,
-                    '_id'    => $log['id']
+                    '_id'    => isset($log['id']) ? $log['id'] : (string) Uuid::generate()
                 ]
             ]);
             $itemsForBulkInsert[] = json_encode($log);
@@ -114,7 +115,7 @@ class RedisElasticsearchCurl  extends AdapterAbstract
         ]);
         $response = curl_exec($ch);
         $data = json_decode($response,1);
-        $this->count = count($data['items']);
+        $this->count = isset($data['items']) ? count($data['items']) : 0;
         curl_close($ch);
     }
 
