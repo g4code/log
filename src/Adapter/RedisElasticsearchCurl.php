@@ -2,19 +2,20 @@
 
 namespace G4\Log\Adapter;
 
-use G4\Log\AdapterAbstract;
 use G4\ValueObject\Uuid;
 
-class RedisElasticsearchCurl  extends AdapterAbstract
+class RedisElasticsearchCurl
 {
     const TIMEOUT = 1;
     const METHOD_POST =   'POST';
     const BULK = '_bulk';
 
+
     /**
-     * @var string
+     * @var array
      */
-    private $host;
+    private $hosts;
+    /**
 
     /**
      * @var string
@@ -27,9 +28,9 @@ class RedisElasticsearchCurl  extends AdapterAbstract
     private $type;
 
     /**
-     * @var int
+     * @var array
      */
-    private $count;
+    private $counts;
 
     /**
      * Elasticsearch constructor.
@@ -39,21 +40,23 @@ class RedisElasticsearchCurl  extends AdapterAbstract
      */
     public function __construct(array $hosts)
     {
-        $this->host     = $hosts[array_rand(array_filter($hosts))];
+        $this->hosts = $this->buildHosts($hosts);
     }
 
-    public function save(array $data)
+    public function getCountInfo()
     {
-        $this->shouldSaveInOneCall()
-            ? $this->appendData($data)
-            : $this->send($data, $this->buildUrl($data['id']), self::METHOD_POST);
-    }
+        $countInfo = '';
+        if (!empty($this->counts)) {
+            foreach ($this->counts as $key => $count ) {
+                $countInfo .= '[log] ES Cluster: ' . $key . ', count: ' . $count  . PHP_EOL;
+            }
+        } else {
+            foreach ($this->hosts as $host) {
+                $countInfo .= '[log] ES Cluster: ' . $host . ', count: ' . 0  . PHP_EOL;
+            }
+        }
 
-    public function saveAppend(array $data)
-    {
-        $this->shouldSaveInOneCall()
-            ? $this->appendData($data)->send($this->getData(), $this->buildUrl($data['id']), self::METHOD_POST)
-            : $this->send(['doc' => $data], $this->buildUrl($data['id'], '_update'), self::METHOD_POST);
+        return $countInfo;
     }
 
     public function sendAll(array $data)
@@ -74,29 +77,30 @@ class RedisElasticsearchCurl  extends AdapterAbstract
             ]);
             $itemsForBulkInsert[] = json_encode($log);
         }
-        $this->send(implode(PHP_EOL, $itemsForBulkInsert) . PHP_EOL, $this->buildBulkUrl(), self::METHOD_POST);
+
+        foreach ($this->hosts as $host) {
+            $this->send(implode(PHP_EOL, $itemsForBulkInsert) . PHP_EOL, $this->buildBulkUrl($host), self::METHOD_POST);
+        }
     }
 
-
-    private function buildUrl($id, $update = null)
+    private function buildBulkUrl($host)
     {
         return join('/', [
-            $this->host,
-            $this->index,
-            $this->type,
-            $id,
-            $update
-        ]);
-    }
-
-    private function buildBulkUrl()
-    {
-        return join('/', [
-            $this->host,
+            $host,
             self::BULK
         ]);
     }
 
+    private function buildHosts(array $hosts)
+    {
+        $formattedHosts = [];
+        foreach ($hosts as $host) {
+            if (!empty(array_filter($host))) {
+                $formattedHosts[] = $host[array_rand(array_filter($host))];
+            }
+        }
+        return $formattedHosts;
+    }
 
     private function send($data, $url, $method)
     {
@@ -115,13 +119,9 @@ class RedisElasticsearchCurl  extends AdapterAbstract
         ]);
         $response = curl_exec($ch);
         $data = json_decode($response,1);
-        $this->count = isset($data['items']) ? count($data['items']) : 0;
+        $host = substr($url, 0, strpos($url, '/'));
+        $this->counts[$host] = isset($data['items']) ? count($data['items']) : 0;
         curl_close($ch);
-    }
-
-    public function getCount()
-    {
-        return isset($this->count) ? $this->count : 0;
     }
 
     private function setIndex($index)
