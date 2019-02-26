@@ -71,7 +71,7 @@ class RedisToElastic
         echo self::LOG_TITLE . ' The number of ' . (string) $this->redisClient->getKey()
             . ' logs read from redis: ' . $this->countFromRedis . PHP_EOL;
         echo self::LOG_TITLE . ' The number of ' . (string) $this->redisClient->getKey()
-            . ' logs inserted in ES: ' . $this->elasticClient->getCount() . PHP_EOL;
+            . ' logs inserted in ES: ' . PHP_EOL . $this->elasticClient->getCountInfo() . PHP_EOL;
         return $this;
     }
 }
