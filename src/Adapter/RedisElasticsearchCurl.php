@@ -15,6 +15,12 @@ class RedisElasticsearchCurl
      * @var array
      */
     private $hosts;
+
+    /**
+     * @var array
+     */
+    private $versions;
+
     /**
 
     /**
@@ -38,21 +44,22 @@ class RedisElasticsearchCurl
      * @param string $index
      * @param string $type
      */
-    public function __construct(array $hosts)
+    public function __construct(array $hosts, array $versions=[])
     {
         $this->hosts = $this->buildHosts($hosts);
+        $this->versions = array_values($versions);
     }
 
     public function getCountInfo()
     {
         $countInfo = '';
         if (!empty($this->counts)) {
-            foreach ($this->counts as $key => $count ) {
-                $countInfo .= '[log] ES Cluster: ' . $key . ', count: ' . $count  . PHP_EOL;
+            foreach ($this->counts as $host => $count ) {
+                $countInfo .= sprintf("[log] |- ES Cluster: %s, count: %s, exec_time: %s ms\n", $host, $count['count'], number_format($count['exec_time']));
             }
         } else {
             foreach ($this->hosts as $host) {
-                $countInfo .= '[log] ES Cluster: ' . $host . ', count: ' . 0  . PHP_EOL;
+                $countInfo .= sprintf("[log] |- ES Cluster: %s, count: 0\n", $host);
             }
         }
 
@@ -61,25 +68,12 @@ class RedisElasticsearchCurl
 
     public function sendAll(array $data)
     {
-        $itemsForBulkInsert = [];
-        foreach ($data as $log) {
-            $this->setIndex($log['_index']);
-            $this->setType($log['_type']);
-            unset($log['_index']);
-            unset($log['_type']);
-
-            $itemsForBulkInsert[] = json_encode([
-                'index' => [
-                    '_index' => $this->index,
-                    '_type'  => $this->type,
-                    '_id'    => isset($log['id']) ? $log['id'] : (string) Uuid::generate()
-                ]
-            ]);
-            $itemsForBulkInsert[] = json_encode($log);
-        }
-
-        foreach ($this->hosts as $host) {
-            $this->send(implode(PHP_EOL, $itemsForBulkInsert) . PHP_EOL, $this->buildBulkUrl($host), self::METHOD_POST);
+        foreach ($this->hosts as $hostId => $host) {
+            $this->send(
+                $this->buildBulkData($data, $hostId),
+                $this->buildBulkUrl($host),
+                self::METHOD_POST
+            );
         }
     }
 
@@ -117,10 +111,16 @@ class RedisElasticsearchCurl
             CURLOPT_URL            => $url,
             CURLOPT_HTTPHEADER     => ['Content-Type: application/json'],
         ]);
+        $start = microtime(true);
         $response = curl_exec($ch);
-        $data = json_decode($response,1);
+        $duration = microtime(true) - $start;
+
+        $data = json_decode($response,true);
         $host = substr($url, 0, strpos($url, '/'));
-        $this->counts[$host] = isset($data['items']) ? count($data['items']) : 0;
+        $this->counts[$host] = [
+            'count' => isset($data['items']) ? count($data['items']) : 0,
+            'exec_time' => ceil($duration * 1000),
+        ];
         curl_close($ch);
     }
 
@@ -134,6 +134,33 @@ class RedisElasticsearchCurl
     {
         $this->type = $type;
         return $this;
+    }
+
+
+    private function buildBulkData(array $data, $hostId)
+    {
+        // es6 version has some breaking changes
+        $esVersion6 = array_key_exists($hostId, $this->versions) && $this->versions[$hostId] === 'es6';
+
+        $bulkData = [];
+        foreach ($data as $log) {
+            $this->setIndex($log['_index']);
+            $this->setType($log['_type']);
+            unset($log['_index'], $log['_type']);
+
+            $bulkData[] = json_encode([
+                'index' => [
+                    '_index' => $this->index,
+                    '_type'  => $esVersion6 ? '_doc': $this->type,
+                    '_id'    => isset($log['id']) ? $log['id'] : (string) Uuid::generate()
+                ]
+            ]);
+
+            $bulkData[] = $esVersion6
+                ? json_encode(['index_type' => $this->type] + $log)
+                : json_encode($log);
+        }
+        return implode(PHP_EOL, $bulkData) . PHP_EOL;
     }
 
 
