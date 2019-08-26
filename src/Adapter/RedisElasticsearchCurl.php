@@ -9,6 +9,7 @@ class RedisElasticsearchCurl
     const TIMEOUT = 1;
     const METHOD_POST =   'POST';
     const BULK = '_bulk';
+    const HTTP_CODE_200 = 200;
 
 
     /**
@@ -136,6 +137,19 @@ class RedisElasticsearchCurl
         return $this;
     }
 
+    public function isElasticsearchAvailable()
+    {
+        $ch = curl_init($this->host);
+
+        curl_setopt_array($ch, [CURLOPT_TIMEOUT => self::TIMEOUT]);
+        curl_exec($ch);
+
+        $httpcode = (int) json_decode(curl_getinfo($ch, CURLINFO_HTTP_CODE));
+
+        curl_close($ch);
+
+        return $httpcode === self::HTTP_CODE_200;
+    }
 
     private function buildBulkData(array $data, $hostId)
     {
