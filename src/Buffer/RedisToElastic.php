@@ -60,9 +60,18 @@ class RedisToElastic
 
     public function insertIntoES()
     {
-        if (!empty($this->data)) {
-            $this->elasticClient->sendAll($this->data);
+        if (empty($this->data)) {
+            return $this;
         }
+
+        if ($this->elasticClient->isElasticsearchAvailable()) {
+            $this->elasticClient->sendAll($this->data);
+
+            return $this;
+        }
+
+        $this->rollbackToRedis();
+
         return $this;
     }
 
@@ -73,5 +82,12 @@ class RedisToElastic
         echo self::LOG_TITLE . ' The number of ' . (string) $this->redisClient->getKey()
             . ' logs inserted in ES: ' . PHP_EOL . $this->elasticClient->getCountInfo() . PHP_EOL;
         return $this;
+    }
+
+    private function rollbackToRedis()
+    {
+        $this->redisClient->doRPushBatch($this->data);
+
+        echo "\nES cluster is not available at the moment.\n";
     }
 }

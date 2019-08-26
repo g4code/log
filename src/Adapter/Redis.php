@@ -79,4 +79,13 @@ class Redis extends AdapterAbstract
         $this->client->rPush((string) $this->key, \json_encode($logData));
     }
 
+    public function doRPushBatch(array $data)
+    {
+        $arguments = array_map(function($logData) {
+            return json_encode($logData);
+        }, $data);
+
+        $this->client->rPush((string) $this->key, ...$arguments);
+    }
+
 }
