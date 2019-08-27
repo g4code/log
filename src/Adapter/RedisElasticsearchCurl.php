@@ -139,7 +139,8 @@ class RedisElasticsearchCurl
 
     public function isElasticsearchAvailable()
     {
-        $ch = curl_init($this->host);
+        $host  = $this->hosts[array_rand(array_filter($this->hosts))];
+        $ch = curl_init($host);
 
         curl_setopt_array($ch, [CURLOPT_TIMEOUT => self::TIMEOUT]);
         curl_exec($ch);
