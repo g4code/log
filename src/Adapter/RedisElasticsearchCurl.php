@@ -11,7 +11,6 @@ class RedisElasticsearchCurl
     const BULK = '_bulk';
     const HTTP_CODE_200 = 200;
 
-
     /**
      * @var array
      */
@@ -21,8 +20,6 @@ class RedisElasticsearchCurl
      * @var array
      */
     private $versions;
-
-    /**
 
     /**
      * @var string
@@ -40,7 +37,8 @@ class RedisElasticsearchCurl
     private $counts;
 
     /**
-     * Elasticsearch constructor.
+     * RedisElasticsearchCurl constructor.
+     *
      * @param array $hosts
      * @param string $index
      * @param string $type
@@ -142,7 +140,11 @@ class RedisElasticsearchCurl
         $host  = $this->hosts[array_rand(array_filter($this->hosts))];
         $ch = curl_init($host);
 
-        curl_setopt_array($ch, [CURLOPT_TIMEOUT => self::TIMEOUT]);
+        curl_setopt_array($ch, [
+            CURLOPT_TIMEOUT => self::TIMEOUT,
+            CURLOPT_RETURNTRANSFER => true,
+        ]);
+
         curl_exec($ch);
 
         $httpcode = (int) json_decode(curl_getinfo($ch, CURLINFO_HTTP_CODE));
@@ -177,6 +179,4 @@ class RedisElasticsearchCurl
         }
         return implode(PHP_EOL, $bulkData) . PHP_EOL;
     }
-
-
 }
