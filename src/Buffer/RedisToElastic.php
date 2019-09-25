@@ -8,7 +8,6 @@ use G4\ValueObject\IntegerNumber;
 
 class RedisToElastic
 {
-
     const LOG_TITLE = '[log]';
 
     /**
@@ -36,7 +35,13 @@ class RedisToElastic
      */
     private $countFromRedis;
 
-
+    /**
+     * RedisToElastic constructor.
+     *
+     * @param Redis $redisClient
+     * @param RedisElasticsearchCurl $elasticClient
+     * @param IntegerNumber $batchsize
+     */
     public function __construct(Redis $redisClient, RedisElasticsearchCurl $elasticClient, IntegerNumber $batchsize)
     {
         $this->redisClient      = $redisClient;
@@ -88,6 +93,6 @@ class RedisToElastic
     {
         $this->redisClient->doRPushBatch($this->data);
 
-        echo "\nES cluster is not available at the moment.\n";
+        echo self::LOG_TITLE . ' ES Cluster is not available at the moment.' . PHP_EOL;
     }
 }
