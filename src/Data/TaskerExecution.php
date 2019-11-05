@@ -13,7 +13,7 @@ class TaskerExecution extends LoggerAbstract
     private $task;
 
     /**
-     * @var \Exception
+     * @var \Exception|\Throwable
      */
     private $exception;
 
@@ -65,10 +65,10 @@ class TaskerExecution extends LoggerAbstract
     }
 
     /**
-     * @param \Exception $exception
+     * @param \Exception|\Throwable $exception
      * @return $this
      */
-    public function setException(\Exception $exception)
+    public function setException($exception)
     {
         $this->exception = $exception;
         return $this;
