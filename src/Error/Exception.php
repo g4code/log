@@ -6,9 +6,9 @@ class Exception extends ErrorAbstract
 {
 
     /**
-     * @param \Throwable $exception
+     * @param \Exception|\Throwable $exception
      */
-    public function handle(\Throwable $exception)
+    public function handle($exception)
     {
         $this->getErrorData()
             ->setCode($exception->getCode())
@@ -23,10 +23,10 @@ class Exception extends ErrorAbstract
     }
 
     /**
-     * @param \Throwable $exception
+     * @param \Exception|\Throwable $exception
      * @return array
      */
-    private function getTrace(\Throwable $exception)
+    private function getTrace($exception)
     {
         $e = $exception;
         while ($e->getPrevious() !== null) {
