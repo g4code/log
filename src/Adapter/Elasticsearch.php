@@ -65,7 +65,7 @@ class Elasticsearch extends AdapterAbstract
             $this->shouldSaveInOneCall()
                 ? $this->appendData($data)
                 : $this->doIndexing($data);
-        } catch (\Exception $exception) {
+        } catch (\Throwable $exception) {
             error_log ($exception->getMessage(), 0);
         }
     }
@@ -76,7 +76,7 @@ class Elasticsearch extends AdapterAbstract
             $this->shouldSaveInOneCall()
                 ? $this->appendData($data)->doIndexing($this->getData())
                 : $this->doUpdate($data);
-        } catch (\Exception $exception) {
+        } catch (\Throwable $exception) {
             error_log ($exception->getMessage(), 0);
         }
     }
