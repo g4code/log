@@ -32,7 +32,7 @@
         "php"           : ">=5.6",
         "g4/runner"     : "*",
         "g4/utility"    : "*",
-        "g4/value-object" : "3.*"
+        "g4/value-object" : "*"
     },
     "suggest": {
         "elasticsearch/elasticsearch": "Allow sending log messages to an Elasticsearch server"
