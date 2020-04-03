@@ -88,4 +88,9 @@ abstract class LoggerAbstract
     {
         return \array_key_exists(self::HEADER_UUID, $_SERVER) ? $_SERVER[self::HEADER_UUID] : null;
     }
+
+    public function getAdditionLogInformation()
+    {
+        return is_callable(['App\DI', 'getAdditionalLog']) ? \App\DI::getAdditionalLog()->getInformation() : [];
+    }
 }

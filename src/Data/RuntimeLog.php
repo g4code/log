@@ -40,7 +40,7 @@ class RuntimeLog extends LoggerAbstract
         $line   = isset($trace[$this->index]['line']) ? $trace[$this->index]['line'] : null;
         $file   = isset($trace[$this->index]['file']) ? $trace[$this->index]['file'] : null;
 
-        return [
+        return array_merge([
             'id'        => $this->getId(),
             'timestamp' => $this->getJsTimestamp(),
             'datetime'  => \date('Y-m-d H:i:s'),
@@ -53,6 +53,6 @@ class RuntimeLog extends LoggerAbstract
             'app_name'  => $this->getAppName(),
             'headers'   => \json_encode($this->getXNDParameters()),
             'uuid'      => $this->getUuid(),
-        ];
+        ], $this->getAdditionLogInformation());
     }
 }
