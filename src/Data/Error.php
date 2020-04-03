@@ -17,7 +17,7 @@ class Error extends LoggerAbstract
      */
     public function getRawData()
     {
-        return [
+        return array_merge([
             'id'        => \md5(\uniqid(microtime(), true)),
             'timestamp' => $this->getJsTimestamp(),
             'datetime'  => \date('Y-m-d H:i:s'),
@@ -37,7 +37,7 @@ class Error extends LoggerAbstract
             'app_name'  => $this->getAppName(),
             'headers'   => \json_encode($this->getXNDParameters()),
             'uuid'      => $this->getUuid(),
-        ];
+        ], $this->getAdditionLogInformation());
     }
 
     /**

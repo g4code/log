@@ -31,7 +31,7 @@ class Request extends RequestResponseAbstarct
      */
     public function getRawData()
     {
-        return [
+        return array_merge([
             'id'                        => $this->getId(),
             'timestamp'                 => $this->getJsTimestamp(),
             'datetime'                  => \date('Y-m-d H:i:s'),
@@ -52,7 +52,7 @@ class Request extends RequestResponseAbstarct
             'server_http_user_agent'    => isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '',
             'headers'                   => \json_encode($this->getXNDParameters()),
             'uuid'                      => $this->getUuid(),
-        ];
+        ], $this->getAdditionLogInformation());
     }
 
     /**
