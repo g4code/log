@@ -21,7 +21,8 @@ class TaskerStart extends LoggerAbstract
             'datetime'  => \date('Y-m-d H:i:s'),
             'options'   => \json_encode($this->options),
             'hostname'  => \gethostname(),
-            'pid'       => \getmypid()
+            'pid'       => \getmypid(),
+            'php_version' => PHP_VERSION,
         ];
     }
 
