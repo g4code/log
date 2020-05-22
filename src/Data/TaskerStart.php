@@ -22,7 +22,7 @@ class TaskerStart extends LoggerAbstract
             'options'   => \json_encode($this->options),
             'hostname'  => \gethostname(),
             'pid'       => \getmypid(),
-            'php_version' => PHP_VERSION,
+            'php_version' => str_replace(PHP_EXTRA_VERSION, '', PHP_VERSION),
         ];
     }
 

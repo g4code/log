@@ -51,6 +51,7 @@ class TaskerExecution extends LoggerAbstract
             'ts_started'    => $this->task->getTsStarted(),
             'exec_time'     => $this->task->getExecTime(),
             'started_count' => $this->task->getStartedCount(),
+            'php_version'   => str_replace(PHP_EXTRA_VERSION, '', PHP_VERSION),
         ];
     }
 

@@ -52,7 +52,7 @@ class Request extends RequestResponseAbstarct
             'server_http_user_agent'    => isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '',
             'headers'                   => \json_encode($this->getXNDParameters()),
             'uuid'                      => $this->getUuid(),
-            'php_version'               => PHP_VERSION,
+            'php_version'               => str_replace(PHP_EXTRA_VERSION, '', PHP_VERSION),
         ], $this->getAdditionLogInformation());
     }
 
