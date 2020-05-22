@@ -37,6 +37,7 @@ class Error extends LoggerAbstract
             'app_name'  => $this->getAppName(),
             'headers'   => \json_encode($this->getXNDParameters()),
             'uuid'      => $this->getUuid(),
+            'php_version' => PHP_VERSION,
         ], $this->getAdditionLogInformation());
     }
 
