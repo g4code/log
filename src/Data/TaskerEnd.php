@@ -18,7 +18,8 @@ class TaskerEnd extends LoggerAbstract
         return [
             'id'           => $this->getId(),
             'type'         => $this->type,
-            'elapsed_time' => $this->getElapsedTime(),
+            'exec_time'    => $this->getElapsedTime(),
+            'php_version'  => str_replace(PHP_EXTRA_VERSION, '', PHP_VERSION),
         ];
     }
 
