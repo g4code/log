@@ -29,6 +29,7 @@ class Response extends RequestResponseAbstarct
             'app_code'     => $this->getApplication()->getResponse()->getApplicationResponseCode(),
             'app_message'  => empty($appMessage) ? null : \json_encode($appMessage),
             'elapsed_time' => $this->getElapsedTime(),
+            'elapsed_time_ms' => (int) ($this->getElapsedTime() * 1000),
             'profiler'     => \json_encode($this->profiler->getProfilerOutput($httpCode)),
         ];
     }
