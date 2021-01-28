@@ -54,6 +54,7 @@ class RuntimeLog extends LoggerAbstract
             'headers'   => \json_encode($this->getXNDParameters()),
             'uuid'      => $this->getUuid(),
             'php_version' => str_replace(PHP_EXTRA_VERSION, '', PHP_VERSION),
+            'hostname'  => \gethostname(),
         ], $this->getAdditionLogInformation());
     }
 }
