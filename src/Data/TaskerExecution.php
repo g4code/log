@@ -6,6 +6,7 @@ namespace G4\Log\Data;
 class TaskerExecution extends LoggerAbstract
 {
     const LOG_TYPE = 'execution';
+    const CONTENT_LIMIT = 512;
 
     /**
      * @var \G4\Tasker\Model\Domain\Task
@@ -21,6 +22,11 @@ class TaskerExecution extends LoggerAbstract
      * @var string
      */
     private $logType;
+
+    /**
+     * @var string
+     */
+    private $output;
 
     public function getRawData()
     {
@@ -44,6 +50,7 @@ class TaskerExecution extends LoggerAbstract
             'identifier'    => $this->task->getIdentifier(),
             'task'          => $this->task->getTask(),
             'data'          => $this->task->getData(),
+            'output'        => $this->getOutput(),
             'request_uuid'  => $this->task->getRequestUuid(),
             'priority'      => $this->task->getPriority(),
             'status'        => $this->task->getStatus(),
@@ -80,5 +87,21 @@ class TaskerExecution extends LoggerAbstract
     {
         $this->logType = $logType;
         return $this;
+    }
+
+    /**
+     * @param string
+     */
+    public function setOutput($output)
+    {
+        $this->output = substr($output, 0, self::CONTENT_LIMIT);
+    }
+
+    /**
+     * @return string
+     */
+    public function getOutput()
+    {
+        return $this->output;
     }
 }
