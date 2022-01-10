@@ -50,7 +50,7 @@ class TaskerExecution extends LoggerAbstract
             'identifier'    => $this->task->getIdentifier(),
             'task'          => $this->task->getTask(),
             'data'          => $this->task->getData(),
-            'output'        => $this->getOutput(),
+            'output'        => $this->getOutput() ?: null,
             'request_uuid'  => $this->task->getRequestUuid(),
             'priority'      => $this->task->getPriority(),
             'status'        => $this->task->getStatus(),
