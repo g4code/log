@@ -94,7 +94,9 @@ class TaskerExecution extends LoggerAbstract
      */
     public function setOutput($output)
     {
-        $this->output = substr($output, 0, self::CONTENT_LIMIT);
+        $this->output = $output
+            ? substr($output, 0, self::CONTENT_LIMIT)
+            : null;
     }
 
     /**
