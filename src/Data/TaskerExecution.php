@@ -50,7 +50,7 @@ class TaskerExecution extends LoggerAbstract
             'identifier'    => $this->task->getIdentifier(),
             'task'          => $this->task->getTask(),
             'data'          => $this->task->getData(),
-            'output'        => $this->getOutput() ?: null,
+            'output'        => $this->getOutput(),
             'request_uuid'  => $this->task->getRequestUuid(),
             'priority'      => $this->task->getPriority(),
             'status'        => $this->task->getStatus(),
@@ -94,7 +94,9 @@ class TaskerExecution extends LoggerAbstract
      */
     public function setOutput($output)
     {
-        $this->output = substr($output, 0, self::CONTENT_LIMIT);
+        $this->output = $output
+            ? substr($output, 0, self::CONTENT_LIMIT)
+            : null;
     }
 
     /**
