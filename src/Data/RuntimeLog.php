@@ -47,7 +47,7 @@ class RuntimeLog extends LoggerAbstract
             'ip'        => isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : 'cli',
             'file'      => $file,
             'line'      => $line,
-            'data'      => \var_export($this->loggedData, true),
+            'data'      => $this->getLoggedData(),
             'tag'       => $this->tag ? $this->tag : '',
             'client_ip' => $this->getClientIp(),
             'app_name'  => $this->getAppName(),
@@ -57,4 +57,13 @@ class RuntimeLog extends LoggerAbstract
             'hostname'  => \gethostname(),
         ], $this->getAdditionLogInformation());
     }
+
+    private function getLoggedData()
+    {
+        ob_start();
+        var_dump($this->loggedData);
+        $content = ob_get_clean();
+        return $content ?: null;
+    }
+
 }
