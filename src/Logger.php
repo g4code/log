@@ -35,4 +35,12 @@ class Logger
     {
         $this->log(new \G4\Log\Data\RuntimeLog($var, $tag, $index));
     }
+
+    public function messageLog($mapperInterface, $queueName, $tag = false)
+    {
+        $data = new \G4\Log\Data\Messages($mapperInterface, $queueName, $tag);
+        if($data->isSourceAllowed()) {
+            $this->log($data);
+        }
+    }
 }
