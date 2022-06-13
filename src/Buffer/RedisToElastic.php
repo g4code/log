@@ -57,6 +57,7 @@ class RedisToElastic
             foreach ($data as $key => $log) {
                 $logData = json_decode($log, 1);
                 $this->data[$key] = $logData;
+                $this->data[$key]['doc_length'] = strlen($log);
             }
         }
 
