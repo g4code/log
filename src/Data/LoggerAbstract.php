@@ -21,6 +21,9 @@ abstract class LoggerAbstract
      */
     private $startTime;
 
+    /** @var Exclude */
+    private $exclude;
+
     /**
      * @return float
      */
@@ -92,5 +95,22 @@ abstract class LoggerAbstract
     public function getAdditionLogInformation()
     {
         return is_callable(['App\DI', 'getAdditionalLog']) ? \App\DI::getAdditionalLog()->getInformation() : [];
+    }
+
+    public function setExcluded(Exclude $exclude)
+    {
+        $this->exclude = $exclude;
+    }
+
+    public function filterExcludedFields(array $data)
+    {
+        $exclude = $this->exclude->getExclude();
+        if(empty($exclude)) {
+            return $data;
+        }
+
+        return array_filter($data, function($key) use ($exclude) {
+            return !in_array($key, $exclude);
+        }, ARRAY_FILTER_USE_KEY);
     }
 }

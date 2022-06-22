@@ -2,6 +2,8 @@
 
 namespace G4\Log;
 
+use G4\Log\Data\Exclude;
+
 class Logger
 {
 
@@ -12,22 +14,29 @@ class Logger
      */
     private $adapter;
 
+    /** @var Exclude */
+    private $exclude;
+
     /**
      * Logger constructor.
      * @param AdapterInterface $adapter
+     * @param Exclude|null $exclude
      */
-    public function __construct(\G4\Log\AdapterInterface $adapter)
+    public function __construct(\G4\Log\AdapterInterface $adapter, Exclude $exclude = null)
     {
         $this->adapter = $adapter;
+        $this->exclude = empty($exclude) ? new Exclude() : $exclude;
     }
 
     public function log(\G4\Log\Data\LoggerAbstract $data)
     {
+        $data->setExcluded($this->exclude);
         $this->adapter->save($data->getRawData());
     }
 
     public function logAppend(\G4\Log\Data\LoggerAbstract $data)
     {
+        $data->setExcluded($this->exclude);
         $this->adapter->saveAppend($data->getRawData());
     }
 
