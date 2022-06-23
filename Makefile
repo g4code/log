@@ -25,6 +25,13 @@ test-group:
 	@/bin/echo -e "${TITLE} testing suite started..." \
 	&& vendor/phpunit/phpunit/composer/bin/phpunit -c tests/phpunit.xml --group $(g) \
 
+phpunitargs = $(if $(t), --filter $(t),"")
+
+test-unit:
+	@/bin/echo "${TITLE} running unit test suite..." \
+	&& XDEBUG_MODE=off php vendor/phpunit/phpunit/phpunit -c test/phpunit.xml $(phpunitargs) \
+	&& /bin/echo "${TITLE} unit tests completed"
+
 update:
 	@/bin/echo -e "${TITLE} update dependencies..." \
 	&& php composer.phar update \

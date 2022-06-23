@@ -28,4 +28,16 @@ abstract class RequestResponseAbstarct extends LoggerAbstract
         $this->application = $application;
         return $this;
     }
+
+    /**
+     * @param Exclude $exclude
+     * @return void
+     */
+    public function setExcluded(Exclude $exclude)
+    {
+        $exclude->setModule($this->getApplication()->getAppNamespace());
+        $exclude->setService($this->getApplication()->getRequest()->getResourceName());
+
+        parent::setExcluded($exclude);
+    }
 }
