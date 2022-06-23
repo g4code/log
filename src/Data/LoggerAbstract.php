@@ -10,6 +10,7 @@ abstract class LoggerAbstract
     const HEADER_APP_NAME  = 'HTTP_X_ND_APP_NAME';
     const HEADER_UUID      = 'HTTP_X_ND_UUID';
     const X_ND_PREFIX      = 'X_ND';
+    const TRUNCATED        = 'TRUNCATED';
 
     /**
      * @var int
@@ -105,12 +106,12 @@ abstract class LoggerAbstract
     public function filterExcludedFields(array $data)
     {
         $exclude = $this->exclude->getExclude();
-        if(empty($exclude)) {
-            return $data;
+        foreach ($exclude as $key) {
+            if (isset($data[$key])) {
+                $data[$key] = self::TRUNCATED;
+            }
         }
 
-        return array_filter($data, function($key) use ($exclude) {
-            return !in_array($key, $exclude);
-        }, ARRAY_FILTER_USE_KEY);
+        return  $data;
     }
 }

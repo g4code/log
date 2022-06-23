@@ -7,6 +7,8 @@ use G4\Log\Data\Response;
 
 class LoggerTest extends PHPUnit_Framework_TestCase
 {
+    const TRUNCATED = 'TRUNCATED';
+
     public function testLog()
     {
         $_SERVER['REQUEST_METHOD'] = 'GET';
@@ -33,6 +35,9 @@ class LoggerTest extends PHPUnit_Framework_TestCase
                     'message' => 'No Content',
                     'resource' => null,
                     'app_code' => null,
+                    'app_message' => null,
+                    'elapsed_time' => self::TRUNCATED,
+                    'elapsed_time_ms' => self::TRUNCATED,
                     'profiler' => '{"test_profiler":"example"}'
                 ]
             );
@@ -49,7 +54,9 @@ class LoggerTest extends PHPUnit_Framework_TestCase
                             'get' => ['elapsed_time', 'app_message', 'elapsed_time_ms']
                         ]
                 ]
-        ], 'test_module', 'test_service');
+        ]);
+        $exclude->setModule('test_module');
+        $exclude->setService('test_service');
 
         $logger = new \G4\Log\Logger($adapter, $exclude);
         $logger->log($response);
