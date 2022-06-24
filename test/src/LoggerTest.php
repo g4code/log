@@ -7,7 +7,7 @@ use G4\Log\Data\Response;
 
 class LoggerTest extends PHPUnit_Framework_TestCase
 {
-    const TRUNCATED = 'TRUNCATED';
+    const EXCLUDED = 'EXCLUDED';
 
     public function testLog()
     {
@@ -36,8 +36,8 @@ class LoggerTest extends PHPUnit_Framework_TestCase
                     'resource' => null,
                     'app_code' => null,
                     'app_message' => null,
-                    'elapsed_time' => self::TRUNCATED,
-                    'elapsed_time_ms' => self::TRUNCATED,
+                    'elapsed_time' => self::EXCLUDED,
+                    'elapsed_time_ms' => self::EXCLUDED,
                     'profiler' => '{"test_profiler":"example"}'
                 ]
             );

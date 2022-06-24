@@ -10,7 +10,7 @@ abstract class LoggerAbstract
     const HEADER_APP_NAME  = 'HTTP_X_ND_APP_NAME';
     const HEADER_UUID      = 'HTTP_X_ND_UUID';
     const X_ND_PREFIX      = 'X_ND';
-    const TRUNCATED        = 'TRUNCATED';
+    const EXCLUDED        = 'EXCLUDED';
 
     /**
      * @var int
@@ -108,7 +108,7 @@ abstract class LoggerAbstract
         $exclude = $this->exclude->getExclude();
         foreach ($exclude as $key) {
             if (isset($data[$key])) {
-                $data[$key] = self::TRUNCATED;
+                $data[$key] = self::EXCLUDED;
             }
         }
 

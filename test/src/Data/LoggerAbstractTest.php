@@ -14,7 +14,7 @@ class LoggerAbstractTest extends PHPUnit_Framework_TestCase
     private $profiler;
     private $request;
     private $logger;
-    const TRUNCATED = 'TRUNCATED';
+    const EXCLUDED = 'EXCLUDED';
 
 
     protected function setUp()
@@ -51,8 +51,8 @@ class LoggerAbstractTest extends PHPUnit_Framework_TestCase
 
         $rawData = $this->logger->getRawData();
 
-        $this->assertTrue($rawData['message'] === self::TRUNCATED);
-        $this->assertTrue($rawData['resource'] === self::TRUNCATED);
+        $this->assertTrue($rawData['message'] === self::EXCLUDED);
+        $this->assertTrue($rawData['resource'] === self::EXCLUDED);
     }
 
     public function testFilterExcludedFieldsEmpty()
@@ -66,8 +66,8 @@ class LoggerAbstractTest extends PHPUnit_Framework_TestCase
 
         $rawData = $this->logger->getRawData();
 
-        $this->assertFalse($rawData['message'] === self::TRUNCATED);
-        $this->assertFalse($rawData['resource'] === self::TRUNCATED);
+        $this->assertFalse($rawData['message'] === self::EXCLUDED);
+        $this->assertFalse($rawData['resource'] === self::EXCLUDED);
     }
 
     public function testFilterExcludedFieldsModuleMismatch()
@@ -86,8 +86,8 @@ class LoggerAbstractTest extends PHPUnit_Framework_TestCase
 
         $rawData = $this->logger->getRawData();
 
-        $this->assertFalse($rawData['message'] === self::TRUNCATED);
-        $this->assertFalse($rawData['resource'] === self::TRUNCATED);
+        $this->assertFalse($rawData['message'] === self::EXCLUDED);
+        $this->assertFalse($rawData['resource'] === self::EXCLUDED);
     }
 
     public function testFilterExcludedFieldsServiceMismatch()
@@ -106,8 +106,8 @@ class LoggerAbstractTest extends PHPUnit_Framework_TestCase
 
         $rawData = $this->logger->getRawData();
 
-        $this->assertFalse($rawData['message'] === self::TRUNCATED);
-        $this->assertFalse($rawData['resource'] === self::TRUNCATED);
+        $this->assertFalse($rawData['message'] === self::EXCLUDED);
+        $this->assertFalse($rawData['resource'] === self::EXCLUDED);
     }
 
     public function testFilterExcludedFieldsWithMethod()
@@ -132,8 +132,8 @@ class LoggerAbstractTest extends PHPUnit_Framework_TestCase
 
         $rawData = $this->logger->getRawData();
 
-        $this->assertTrue($rawData['message'] === self::TRUNCATED);
-        $this->assertTrue($rawData['resource'] === self::TRUNCATED);
+        $this->assertTrue($rawData['message'] === self::EXCLUDED);
+        $this->assertTrue($rawData['resource'] === self::EXCLUDED);
     }
 
     public function testFilterExcludedFieldsMethodMismatch()
@@ -156,7 +156,7 @@ class LoggerAbstractTest extends PHPUnit_Framework_TestCase
 
         $rawData = $this->logger->getRawData();
 
-        $this->assertFalse($rawData['message'] === self::TRUNCATED);
-        $this->assertFalse($rawData['resource'] === self::TRUNCATED);
+        $this->assertFalse($rawData['message'] === self::EXCLUDED);
+        $this->assertFalse($rawData['resource'] === self::EXCLUDED);
     }
 }
