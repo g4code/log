@@ -4,6 +4,7 @@ namespace G4\Log\Buffer;
 
 use G4\Log\Adapter\RedisElasticsearchCurl;
 use G4\Log\Adapter\Redis;
+use G4\Log\Error\Exception;
 use G4\ValueObject\IntegerNumber;
 
 class RedisToElastic
@@ -70,13 +71,12 @@ class RedisToElastic
             return $this;
         }
 
-        if ($this->elasticClient->isElasticsearchAvailable()) {
+        try {
             $this->elasticClient->sendAll($this->data);
-
-            return $this;
+        } catch (\Exception $exception) {
+            error_log ($exception->getMessage(), 0);
+            $this->rollbackToRedis();
         }
-
-        $this->rollbackToRedis();
 
         return $this;
     }

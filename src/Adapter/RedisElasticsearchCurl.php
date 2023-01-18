@@ -114,13 +114,28 @@ class RedisElasticsearchCurl
         $response = curl_exec($ch);
         $duration = microtime(true) - $start;
 
+        $info = curl_getinfo($ch);
+
+        curl_close($ch);
+
+        if (isset($info['http_code']) && ((int) $info['http_code'] < 200 || (int) $info['http_code'] > 299)) {
+            throw new \Exception(
+                sprintf(
+                    "Unexpected response code:%s from ES has been returned on submit. More info: %s. Body: %s. Response: %s",
+                    $info['http_code'],
+                    json_encode($info),
+                    json_encode($this->body),
+                    is_array($response) ? json_encode($response) : $response
+                )
+            );
+        }
+
         $data = json_decode($response,true);
         $host = substr($url, 0, strpos($url, '/'));
         $this->counts[$host] = [
             'count' => isset($data['items']) ? count($data['items']) : 0,
             'exec_time' => ceil($duration * 1000),
         ];
-        curl_close($ch);
     }
 
     private function setIndex($index)
