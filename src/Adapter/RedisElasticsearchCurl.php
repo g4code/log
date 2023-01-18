@@ -114,6 +114,12 @@ class RedisElasticsearchCurl
         $response = curl_exec($ch);
         $duration = microtime(true) - $start;
 
+        $error = curl_error($ch);
+
+        if ($error) {
+            throw new \Exception(sprintf("Submit curl request failed. Error: %s", $error));
+        }
+
         $data = json_decode($response,true);
         $host = substr($url, 0, strpos($url, '/'));
         $this->counts[$host] = [
