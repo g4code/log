@@ -124,7 +124,7 @@ class RedisElasticsearchCurl
                     "Unexpected response code:%s from ES has been returned on submit. More info: %s. Body: %s. Response: %s",
                     $info['http_code'],
                     json_encode($info),
-                    json_encode($this->body),
+                    json_encode($curlPostFieldsData),
                     is_array($response) ? json_encode($response) : $response
                 )
             );
