@@ -118,16 +118,16 @@ class RedisElasticsearchCurl
 
         curl_close($ch);
 
-        if (isset($info['http_code']) && ((int) $info['http_code'] < 200 || (int) $info['http_code'] > 299)) {
-            throw new \Exception(
-                sprintf(
-                    "Unexpected response code:%s from ES has been returned on submit. More info: %s. Body: %s. Response: %s",
-                    $info['http_code'],
-                    json_encode($info),
-                    json_encode($this->body),
-                    is_array($response) ? json_encode($response) : $response
-                )
+        if (isset($info['http_code']) && (int) $info['http_code'] > 299) {
+            $message = sprintf(
+                "Unexpected response code:%s from ES. More info: %s. Body length: %s, Document %s... Response: %s",
+                $info['http_code'],
+                json_encode($info),
+                strlen($curlPostFieldsData),
+                substr($curlPostFieldsData, 0, 500),
+                is_array($response) ? json_encode($response) : $response
             );
+            throw new \RuntimeException($message);
         }
 
         $data = json_decode($response,true);
@@ -176,6 +176,13 @@ class RedisElasticsearchCurl
 
         $bulkData = [];
         foreach ($data as $log) {
+            // skip invalid log entries
+            if (!isset($log['_index'], $log['_type']))
+            {
+                var_dump("Undefined _index or _type", $log);
+                continue;
+            }
+
             $this->setIndex($log['_index']);
             $this->setType($log['_type']);
             unset($log['_index'], $log['_type']);
