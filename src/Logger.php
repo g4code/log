@@ -42,12 +42,15 @@ class Logger
 
     public function runtimeLog($var, $tag = false, $index = self::DEFAULT_LINE)
     {
-        $this->log(new \G4\Log\Data\RuntimeLog($var, $tag, $index));
+        $data = new \G4\Log\Data\RuntimeLog($var, $tag, $index);
+        $data->setId(\md5(\uniqid(microtime(), true)));
+        $this->log($data);
     }
 
     public function messageLog($mapperInterface, $queueName, $tag = false)
     {
         $data = new \G4\Log\Data\Messages($mapperInterface, $queueName, $tag);
+        $data->setId(\md5(\uniqid(microtime(), true)));
         if($data->isSourceAllowed()) {
             $this->log($data);
         }
