@@ -22,16 +22,6 @@ class RedisElasticsearchCurl
     private $versions;
 
     /**
-     * @var string
-     */
-    private $index;
-
-    /**
-     * @var string
-     */
-    private $type;
-
-    /**
      * @var array
      */
     private $counts;
@@ -40,8 +30,7 @@ class RedisElasticsearchCurl
      * RedisElasticsearchCurl constructor.
      *
      * @param array $hosts
-     * @param string $index
-     * @param string $type
+     * @param array $versions
      */
     public function __construct(array $hosts, array $versions=[])
     {
@@ -138,18 +127,6 @@ class RedisElasticsearchCurl
         ];
     }
 
-    private function setIndex($index)
-    {
-        $this->index = $index;
-        return $this;
-    }
-
-    private function setType($type)
-    {
-        $this->type = $type;
-        return $this;
-    }
-
     public function isElasticsearchAvailable()
     {
         $host  = $this->hosts[array_rand(array_filter($this->hosts))];
@@ -171,34 +148,13 @@ class RedisElasticsearchCurl
 
     private function buildBulkData(array $data, $hostId)
     {
-        // es6 version has some breaking changes
-        $esVersion6 = array_key_exists($hostId, $this->versions) && $this->versions[$hostId] === 'es6';
-
-        $bulkData = [];
-        foreach ($data as $log) {
-            // skip invalid log entries
-            if (!isset($log['_index'], $log['_type']))
-            {
-                var_dump("Undefined _index or _type", $log);
-                continue;
-            }
-
-            $this->setIndex($log['_index']);
-            $this->setType($log['_type']);
-            unset($log['_index'], $log['_type']);
-
-            $bulkData[] = json_encode([
-                'index' => [
-                    '_index' => $this->index,
-                    '_type'  => $esVersion6 ? '_doc': $this->type,
-                    '_id'    => isset($log['id']) ? $log['id'] : (string) Uuid::generate()
-                ]
-            ]);
-
-            $bulkData[] = $esVersion6
-                ? json_encode(['index_type' => $this->type] + $log)
-                : json_encode($log);
+        if(empty($data)) {
+            return '';
         }
-        return implode(PHP_EOL, $bulkData) . PHP_EOL;
+
+        //defaultES should never happen, but just in case it does, in the following step we consider it to be <es6 (before es version 6)
+        $esVersion = array_key_exists($hostId, $this->versions) ? $this->versions[$hostId] : 'defaultES';
+
+        return RedisToEsBuildBulkData::buildBulkData($data, $esVersion);
     }
 }
