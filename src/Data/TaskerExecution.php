@@ -3,6 +3,8 @@
 namespace G4\Log\Data;
 
 
+use G4\Runner\Profiler;
+
 class TaskerExecution extends LoggerAbstract
 {
     const LOG_TYPE = 'execution';
@@ -28,16 +30,21 @@ class TaskerExecution extends LoggerAbstract
      */
     private $output;
 
+    /**
+     * @var Profiler
+     */
+    private $profiler;
+
     public function getRawData()
     {
-        return [
+        $rawData = [
             'id'        => $this->getId(),
             'timestamp' => $this->getJsTimestamp(),
             'hostname'  => \gethostname(),
             'pid'       => \getmypid(),
             'type'      => $this->logType?: self::LOG_TYPE,
             'memory_peak_usage'  => memory_get_peak_usage(),
-            'exception' => $this->exception === null ?: \json_encode([
+            'exception' => $this->exception === null ? null : \json_encode([
                     'message' => $this->exception->getMessage(),
                     'line'    => $this->exception->getLine(),
                     'code'    => $this->exception->getCode(),
@@ -61,6 +68,12 @@ class TaskerExecution extends LoggerAbstract
             'started_count' => $this->task->getStartedCount(),
             'php_version'   => str_replace(PHP_EXTRA_VERSION, '', PHP_VERSION),
         ];
+
+        if ($this->profiler) {
+            $rawData += $this->profiler->getProfilerSummary();
+        }
+
+        return $rawData;
     }
 
     /**
@@ -86,6 +99,12 @@ class TaskerExecution extends LoggerAbstract
     public function setLogType($logType)
     {
         $this->logType = $logType;
+        return $this;
+    }
+
+    public function setProfiler(Profiler $profiler)
+    {
+        $this->profiler = $profiler;
         return $this;
     }
 
