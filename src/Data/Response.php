@@ -21,7 +21,7 @@ class Response extends RequestResponseAbstarct
         $appMessage = $this->getApplication()->getResponse()->getResponseMessage();
         $httpCode   = $this->getApplication()->getResponse()->getHttpResponseCode();
 
-        return $this->filterExcludedFields([
+        $rawData = [
             'id'           => $this->getId(),
             'code'         => $httpCode,
             'message'      => $this->getApplication()->getResponse()->getHttpMessage(),
@@ -31,7 +31,11 @@ class Response extends RequestResponseAbstarct
             'elapsed_time' => $this->getElapsedTime(),
             'elapsed_time_ms' => (int) ($this->getElapsedTime() * 1000),
             'profiler'     => \json_encode($this->profiler->getProfilerOutput($httpCode)),
-        ]);
+        ];
+
+        $rawData += $this->profiler->getProfilerSummary();
+
+        return $this->filterExcludedFields($rawData);
     }
 
     /**
