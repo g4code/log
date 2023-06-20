@@ -39,6 +39,7 @@ class Request extends RequestResponseAbstarct
             'module'                    => \strtolower($this->getApplication()->getAppNamespace()),
             'service'                   => \strtolower($this->getApplication()->getRequest()->getResourceName()),
             'method'                    => \strtolower($this->getApplication()->getRequest()->getMethod()),
+            'cookies'                   => \json_encode($_COOKIE),
             'params'                    => \json_encode($this->obfuscateParams($this->getApplication()->getRequest()->getParams())),
             'hostname'                  => \gethostname(),
             'app_key'                   => $this->getApplication()->getRequest()->getParam('X-ND-AppKey') ?: null,
