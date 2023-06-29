@@ -31,6 +31,7 @@ class Response extends RequestResponseAbstarct
             'elapsed_time' => $this->getElapsedTime(),
             'elapsed_time_ms' => (int) ($this->getElapsedTime() * 1000),
             'profiler'     => \json_encode($this->profiler->getProfilerOutput($httpCode)),
+            'app_version'  => $this->getAppVersionNumber(),
         ];
 
         $rawData += $this->profiler->getProfilerSummary();

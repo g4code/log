@@ -21,6 +21,7 @@ class TaskerEnd extends LoggerAbstract
             'exec_time'    => $this->getElapsedTime(),
             'exec_time_ms' => (int) ($this->getElapsedTime() * 1000),
             'php_version'  => str_replace(PHP_EXTRA_VERSION, '', PHP_VERSION),
+            'app_version'        => $this->getAppVersionNumber(),
         ];
     }
 

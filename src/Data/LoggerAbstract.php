@@ -3,6 +3,7 @@
 namespace G4\Log\Data;
 
 use G4\Utility\Tools;
+use G4\Version\Version;
 
 abstract class LoggerAbstract
 {
@@ -24,6 +25,9 @@ abstract class LoggerAbstract
 
     /** @var Exclude */
     private $exclude;
+
+    /** @var Version|null */
+    private $version;
 
     /**
      * @return float
@@ -101,6 +105,17 @@ abstract class LoggerAbstract
     public function setExcluded(Exclude $exclude)
     {
         $this->exclude = $exclude;
+    }
+
+    public function setAppVersionNumber($version)
+    {
+        $this->version = $version;
+        return $this;
+    }
+
+    public function getAppVersionNumber()
+    {
+        return $this->version instanceof Version ? $this->version->getVersionNumber() : $this->version;
     }
 
     public function filterExcludedFields(array $data)

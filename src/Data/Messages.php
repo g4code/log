@@ -63,6 +63,7 @@ class Messages extends LoggerAbstract
             'uuid'          => $this->getUuid(),
             'php_version'   => str_replace(PHP_EXTRA_VERSION, '', PHP_VERSION),
             'hostname'      => \gethostname(),
+            'app_version'   => $this->getAppVersionNumber(),
         ], $this->getAdditionLogInformation());
     }
 }
