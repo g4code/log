@@ -107,12 +107,20 @@ abstract class LoggerAbstract
         $this->exclude = $exclude;
     }
 
+    /**
+     * @param $version
+     * @return $this
+     */
     public function setAppVersionNumber($version)
     {
         $this->version = $version;
         return $this;
     }
 
+
+    /**
+     * @return string|null
+     */
     public function getAppVersionNumber()
     {
         return $this->version instanceof Version ? $this->version->getVersionNumber() : $this->version;
