@@ -67,6 +67,7 @@ class TaskerExecution extends LoggerAbstract
             'exec_time_ms'  => (int) ($this->task->getExecTime() * 1000),
             'started_count' => $this->task->getStartedCount(),
             'php_version'   => str_replace(PHP_EXTRA_VERSION, '', PHP_VERSION),
+            'app_version'   => $this->getAppVersionNumber(),
         ];
 
         if ($this->profiler) {
