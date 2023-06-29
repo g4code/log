@@ -107,23 +107,23 @@ abstract class LoggerAbstract
         $this->exclude = $exclude;
     }
 
+
     /**
-     * @param $version
+     * @param Version|null $version
      * @return $this
      */
-    public function setAppVersionNumber($version)
+    public function setAppVersionNumber(Version $version = null)
     {
         $this->version = $version;
         return $this;
     }
-
 
     /**
      * @return string|null
      */
     public function getAppVersionNumber()
     {
-        return $this->version instanceof Version ? $this->version->getVersionNumber() : $this->version;
+        return $this->version instanceof Version ? $this->version->getVersionNumber() : null;
     }
 
     public function filterExcludedFields(array $data)
