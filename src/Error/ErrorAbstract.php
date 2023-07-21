@@ -92,6 +92,7 @@ abstract class ErrorAbstract
                 ->setData($this->errorData)
                 ->display();
         }
+        $this->sendResponseHeader();
         return $this;
     }
 
@@ -127,6 +128,23 @@ abstract class ErrorAbstract
     {
         return $this->debug
             && error_reporting()
-            && $this->errorData->getCode();
+            && ($this->errorData->getCode() || $this->errorData->isException());
+    }
+
+    private function sendResponseHeader()
+    {
+        if (php_sapi_name() === 'cli' || headers_sent()) {
+            return;
+        }
+
+        if (!$this->errorData->getCode() && $this->errorData->isException()) {
+            $responseCode = 500;
+        }
+
+        if ($this->errorData->getCode()) {
+            $responseCode = $this->errorData->getCode();
+        }
+
+        http_response_code($responseCode);
     }
 }

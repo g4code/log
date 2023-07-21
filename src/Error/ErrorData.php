@@ -169,4 +169,12 @@ class ErrorData
         $this->exceptionFlag = true;
         return $this;
     }
+
+    /**
+     * @return bool
+     */
+    public function isException()
+    {
+        return $this->exceptionFlag;
+    }
 }
