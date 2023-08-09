@@ -2,6 +2,7 @@
 
 namespace G4\Log\Data;
 
+use G4\Constants\Override;
 use G4\Utility\Tools;
 use G4\Version\Version;
 
@@ -136,5 +137,15 @@ abstract class LoggerAbstract
         }
 
         return  $data;
+    }
+
+    /**
+     * @return int|null
+     */
+    protected function getDbProfilerRequestParam()
+    {
+        return array_key_exists(Override::DB_PROFILER, $_GET)
+            ? (int) $_GET[Override::DB_PROFILER]
+            : null;
     }
 }
