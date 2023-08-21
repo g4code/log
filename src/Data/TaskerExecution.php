@@ -68,7 +68,8 @@ class TaskerExecution extends LoggerAbstract
             'started_count' => $this->task->getStartedCount(),
             'php_version'   => str_replace(PHP_EXTRA_VERSION, '', PHP_VERSION),
             'app_version'   => $this->getAppVersionNumber(),
-            'queue_source'  => $this->task->getQueueSource(),
+            'queue_source'  => method_exists($this->task, 'getQueueSource')
+                ? $this->task->getQueueSource() : null,
         ];
 
         if ($this->profiler) {
