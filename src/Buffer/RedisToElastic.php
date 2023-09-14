@@ -37,6 +37,11 @@ class RedisToElastic
     private $countFromRedis;
 
     /**
+     * @var array
+     */
+    private $prettyPrintFields;
+
+    /**
      * RedisToElastic constructor.
      *
      * @param Redis $redisClient
@@ -48,6 +53,13 @@ class RedisToElastic
         $this->redisClient      = $redisClient;
         $this->elasticClient    = $elasticClient;
         $this->batchsize        = $batchsize;
+        $this->prettyPrintFields = [];
+    }
+
+    public function setPrettyPrintFields(array $fields)
+    {
+        $this->prettyPrintFields = $fields;
+        return $this;
     }
 
     public function transferData()
@@ -57,12 +69,18 @@ class RedisToElastic
         if (!empty($data)) {
             foreach ($data as $key => $log) {
                 $logData = json_decode($log, 1);
-                $this->data[$key] = $logData;
+                $this->data[$key] = $this->prettify($logData);
                 $this->data[$key]['doc_length'] = strlen($log);
             }
         }
 
         return $this;
+    }
+
+    private function prettify(array $logData)
+    {
+        return (new PrettifyJson($this->redisClient->getKey(), $this->prettyPrintFields))
+            ->prettify($logData);
     }
 
     public function insertIntoES()
