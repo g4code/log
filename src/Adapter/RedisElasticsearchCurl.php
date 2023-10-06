@@ -98,6 +98,8 @@ class RedisElasticsearchCurl
             CURLOPT_TIMEOUT        => self::TIMEOUT,
             CURLOPT_URL            => $url,
             CURLOPT_HTTPHEADER     => ['Content-Type: application/json'],
+            CURLOPT_SSL_VERIFYHOST =>  0,
+            CURLOPT_SSL_VERIFYPEER =>  0
         ]);
         $start = microtime(true);
         $response = curl_exec($ch);
@@ -120,13 +122,16 @@ class RedisElasticsearchCurl
         }
 
         $data = json_decode($response,true);
-        $host = substr($url, 0, strpos($url, '/'));
+        $host = parse_url($url, PHP_URL_HOST) . ':' . parse_url($url, PHP_URL_PORT);
         $this->counts[$host] = [
             'count' => isset($data['items']) ? count($data['items']) : 0,
             'exec_time' => ceil($duration * 1000),
         ];
     }
 
+    /**
+     * @deprecated
+     */
     public function isElasticsearchAvailable()
     {
         $host  = $this->hosts[array_rand(array_filter($this->hosts))];
