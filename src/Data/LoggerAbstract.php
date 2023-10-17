@@ -29,6 +29,10 @@ abstract class LoggerAbstract
 
     /** @var Version|null */
     private $version;
+    /**
+     * @var string
+     */
+    private $logLevel;
 
     /**
      * @return float
@@ -120,11 +124,29 @@ abstract class LoggerAbstract
     }
 
     /**
+     * @param string $logLevel
+     * @return $this
+     */
+    public function setLogLevel(string $logLevel)
+    {
+        $this->logLevel = $logLevel;
+        return $this;
+    }
+
+    /**
      * @return string|null
      */
     public function getAppVersionNumber()
     {
         return $this->version instanceof Version ? $this->version->getVersionNumber() : null;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLogLevel()
+    {
+        return $this->logLevel;
     }
 
     public function filterExcludedFields(array $data)
