@@ -3,6 +3,7 @@
 namespace G4\Log;
 
 use G4\Log\Data\Exclude;
+use G4\Log\Mapper\MessagesMapInterface;
 use G4\Version\Version;
 
 /**
@@ -40,7 +41,7 @@ class Logger
 
     /**
      * @param Data\LoggerAbstract $data
-     * @param $logLevel
+     * @param string $logLevel
      * @return void
      */
     public function log(\G4\Log\Data\LoggerAbstract $data, $logLevel = LoggingLevels::DEBUG)
@@ -63,10 +64,10 @@ class Logger
     }
 
     /**
-     * @param $var
-     * @param $tag
-     * @param $index
-     * @param $logLevel
+     * @param mixed $var
+     * @param string $tag
+     * @param int $index
+     * @param string $logLevel
      * @return void
      */
     public function runtimeLog($var, $tag = false, $index = self::DEFAULT_LINE, $logLevel = LoggingLevels::DEBUG)
@@ -77,9 +78,9 @@ class Logger
     }
 
     /**
-     * @param $mapperInterface
-     * @param $queueName
-     * @param $tag
+     * @param MessagesMapInterface $mapperInterface
+     * @param string $queueName
+     * @param string $tag
      * @return void
      */
     public function messageLog($mapperInterface, $queueName, $tag = false)
@@ -93,9 +94,9 @@ class Logger
     }
 
     /**
-     * @param $var
-     * @param $tag
-     * @param $index
+     * @param mixed $var
+     * @param string $tag
+     * @param int $index
      * @return void
      */
     public function emergency($var, $tag = false, $index = self::DEFAULT_LINE)
@@ -104,9 +105,9 @@ class Logger
     }
 
     /**
-     * @param $var
-     * @param $tag
-     * @param $index
+     * @param mixed $var
+     * @param string $tag
+     * @param int $index
      * @return void
      */
     public function alert($var, $tag = false, $index = self::DEFAULT_LINE)
@@ -115,9 +116,9 @@ class Logger
     }
 
     /**
-     * @param $var
-     * @param $tag
-     * @param $index
+     * @param mixed $var
+     * @param string $tag
+     * @param int $index
      * @return void
      */
     public function critical($var, $tag = false, $index = self::DEFAULT_LINE)
@@ -126,9 +127,9 @@ class Logger
     }
 
     /**
-     * @param $var
-     * @param $tag
-     * @param $index
+     * @param mixed $var
+     * @param string $tag
+     * @param int $index
      * @return void
      */
     public function error($var, $tag = false, $index = self::DEFAULT_LINE)
@@ -137,9 +138,9 @@ class Logger
     }
 
     /**
-     * @param $var
-     * @param $tag
-     * @param $index
+     * @param mixed $var
+     * @param string $tag
+     * @param int $index
      * @return void
      */
     public function warning($var, $tag = false, $index = self::DEFAULT_LINE)
@@ -148,9 +149,9 @@ class Logger
     }
 
     /**
-     * @param $var
-     * @param $tag
-     * @param $index
+     * @param mixed $var
+     * @param string $tag
+     * @param int $index
      * @return void
      */
     public function notice($var, $tag = false, $index = self::DEFAULT_LINE)
@@ -159,9 +160,9 @@ class Logger
     }
 
     /**
-     * @param $var
-     * @param $tag
-     * @param $index
+     * @param mixed $var
+     * @param string $tag
+     * @param int $index
      * @return void
      */
     public function info($var, $tag = false, $index = self::DEFAULT_LINE)
