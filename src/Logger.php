@@ -5,6 +5,9 @@ namespace G4\Log;
 use G4\Log\Data\Exclude;
 use G4\Version\Version;
 
+/**
+ *
+ */
 class Logger
 {
 
@@ -35,13 +38,23 @@ class Logger
         $this->version = $version;
     }
 
-    public function log(\G4\Log\Data\LoggerAbstract $data)
+    /**
+     * @param Data\LoggerAbstract $data
+     * @param $logLevel
+     * @return void
+     */
+    public function log(\G4\Log\Data\LoggerAbstract $data, $logLevel = LoggingLevels::DEBUG)
     {
         $data->setExcluded($this->exclude);
         $data->setAppVersionNumber($this->version);
+        $data->setLogLevel($logLevel);
         $this->adapter->save($data->getRawData());
     }
 
+    /**
+     * @param Data\LoggerAbstract $data
+     * @return void
+     */
     public function logAppend(\G4\Log\Data\LoggerAbstract $data)
     {
         $data->setExcluded($this->exclude);
@@ -49,20 +62,110 @@ class Logger
         $this->adapter->saveAppend($data->getRawData());
     }
 
-    public function runtimeLog($var, $tag = false, $index = self::DEFAULT_LINE)
+    /**
+     * @param $var
+     * @param $tag
+     * @param $index
+     * @param $logLevel
+     * @return void
+     */
+    public function runtimeLog($var, $tag = false, $index = self::DEFAULT_LINE, $logLevel = LoggingLevels::DEBUG)
     {
         $data = new \G4\Log\Data\RuntimeLog($var, $tag, $index);
         $data->setId(\md5(\uniqid(microtime(), true)));
-        $this->log($data);
+        $this->log($data, $logLevel);
     }
 
+    /**
+     * @param $mapperInterface
+     * @param $queueName
+     * @param $tag
+     * @return void
+     */
     public function messageLog($mapperInterface, $queueName, $tag = false)
     {
         $data = new \G4\Log\Data\Messages($mapperInterface, $queueName, $tag);
         $data->setId(\md5(\uniqid(microtime(), true)));
         $data->setAppVersionNumber($this->version);
-        if($data->isSourceAllowed()) {
+        if ($data->isSourceAllowed()) {
             $this->log($data);
         }
+    }
+
+    /**
+     * @param $var
+     * @param $tag
+     * @param $index
+     * @return void
+     */
+    public function emergency($var, $tag = false, $index = self::DEFAULT_LINE)
+    {
+        $this->runtimeLog($var, $tag, $index, LoggingLevels::EMERGENCY);
+    }
+
+    /**
+     * @param $var
+     * @param $tag
+     * @param $index
+     * @return void
+     */
+    public function alert($var, $tag = false, $index = self::DEFAULT_LINE)
+    {
+        $this->runtimeLog($var, $tag, $index, LoggingLevels::ALERT);
+    }
+
+    /**
+     * @param $var
+     * @param $tag
+     * @param $index
+     * @return void
+     */
+    public function critical($var, $tag = false, $index = self::DEFAULT_LINE)
+    {
+        $this->runtimeLog($var, $tag, $index, LoggingLevels::CRITICAL);
+    }
+
+    /**
+     * @param $var
+     * @param $tag
+     * @param $index
+     * @return void
+     */
+    public function error($var, $tag = false, $index = self::DEFAULT_LINE)
+    {
+        $this->runtimeLog($var, $tag, $index, LoggingLevels::ERROR);
+    }
+
+    /**
+     * @param $var
+     * @param $tag
+     * @param $index
+     * @return void
+     */
+    public function warning($var, $tag = false, $index = self::DEFAULT_LINE)
+    {
+        $this->runtimeLog($var, $tag, $index, LoggingLevels::WARNING);
+    }
+
+    /**
+     * @param $var
+     * @param $tag
+     * @param $index
+     * @return void
+     */
+    public function notice($var, $tag = false, $index = self::DEFAULT_LINE)
+    {
+        $this->runtimeLog($var, $tag, $index, LoggingLevels::NOTICE);
+    }
+
+    /**
+     * @param $var
+     * @param $tag
+     * @param $index
+     * @return void
+     */
+    public function info($var, $tag = false, $index = self::DEFAULT_LINE)
+    {
+        $this->runtimeLog($var, $tag, $index, LoggingLevels::INFO);
     }
 }
