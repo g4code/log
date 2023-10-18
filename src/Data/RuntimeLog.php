@@ -56,6 +56,7 @@ class RuntimeLog extends LoggerAbstract
             'php_version' => str_replace(PHP_EXTRA_VERSION, '', PHP_VERSION),
             'hostname'    => \gethostname(),
             'app_version' => $this->getAppVersionNumber(),
+            'log_version' => $this->getLogLevel(),
         ], $this->getAdditionLogInformation());
     }
 
