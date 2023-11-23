@@ -31,7 +31,8 @@ class Request extends RequestResponseAbstarct
      */
     public function getRawData()
     {
-        return $this->filterExcludedFields(array_merge([
+        return $this->filterExcludedFields(
+            array_merge([
             'id'                        => $this->getId(),
             'timestamp'                 => $this->getJsTimestamp(),
             'datetime'                  => \date('Y-m-d H:i:s'),
@@ -55,7 +56,11 @@ class Request extends RequestResponseAbstarct
             'uuid'                      => $this->getUuid(),
             'php_version'               => str_replace(PHP_EXTRA_VERSION, '', PHP_VERSION),
             'app_version'               => $this->getAppVersionNumber(),
-        ], $this->getAdditionLogInformation()));
+            ],
+                $this->getCpuLoad(),
+                $this->getAdditionLogInformation()
+            )
+        );
     }
 
     /**

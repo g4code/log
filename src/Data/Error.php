@@ -39,7 +39,10 @@ class Error extends LoggerAbstract
             'uuid'      => $this->getUuid(),
             'php_version' => str_replace(PHP_EXTRA_VERSION, '', PHP_VERSION),
             'app_version' => $this->getAppVersionNumber(),
-        ], $this->getAdditionLogInformation());
+        ],
+            $this->getCpuLoad(),
+            $this->getAdditionLogInformation(),
+        );
     }
 
     /**

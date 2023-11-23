@@ -15,16 +15,20 @@ class TaskerStart extends LoggerAbstract
      */
     public function getRawData()
     {
-        return [
-            'id'          => $this->getId(),
-            'timestamp'   => $this->getJsTimestamp(),
-            'datetime'    => \date('Y-m-d H:i:s'),
-            'options'     => \json_encode($this->options),
-            'hostname'    => \gethostname(),
-            'pid'         => \getmypid(),
+        $rawData = [
+            'id' => $this->getId(),
+            'timestamp' => $this->getJsTimestamp(),
+            'datetime' => \date('Y-m-d H:i:s'),
+            'options' => \json_encode($this->options),
+            'hostname' => \gethostname(),
+            'pid' => \getmypid(),
             'php_version' => str_replace(PHP_EXTRA_VERSION, '', PHP_VERSION),
             'app_version' => $this->getAppVersionNumber(),
         ];
+
+        $rawData += $this->getCpuLoad();
+
+        return $rawData;
     }
 
     /**

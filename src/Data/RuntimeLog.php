@@ -57,7 +57,10 @@ class RuntimeLog extends LoggerAbstract
             'hostname'    => \gethostname(),
             'app_version' => $this->getAppVersionNumber(),
             'log_level' => $this->getLogLevel(),
-        ], $this->getAdditionLogInformation());
+        ],
+            $this->getCpuLoad(),
+            $this->getAdditionLogInformation(),
+        );
     }
 
     private function getLoggedData()
