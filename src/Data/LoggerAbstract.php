@@ -170,4 +170,27 @@ abstract class LoggerAbstract
             ? (int) $_GET[Override::DB_PROFILER]
             : null;
     }
+
+    /**
+     * @return array
+     */
+    protected function getCpuLoad()
+    {
+        $load = sys_getloadavg();
+        return [
+            'cpu_load_1' => $load[0],
+            'cpu_load_5' => $load[1],
+            'cpu_load_15' => $load[2],
+            'cpu_process' => $this->getUsageByPid(getmypid()),
+        ];
+    }
+
+    /**
+     * @return string
+     */
+    protected function getUsageByPid($pid)
+    {
+        $output = shell_exec("ps -p $pid -o %cpu");
+        return trim(str_replace("%CPU", "", $output));
+    }
 }

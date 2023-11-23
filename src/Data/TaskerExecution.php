@@ -38,39 +38,41 @@ class TaskerExecution extends LoggerAbstract
     public function getRawData()
     {
         $rawData = [
-            'id'        => $this->getId(),
+            'id' => $this->getId(),
             'timestamp' => $this->getJsTimestamp(),
-            'hostname'  => \gethostname(),
-            'pid'       => \getmypid(),
-            'type'      => $this->logType?: self::LOG_TYPE,
-            'memory_peak_usage'  => memory_get_peak_usage(),
+            'hostname' => \gethostname(),
+            'pid' => \getmypid(),
+            'type' => $this->logType ?: self::LOG_TYPE,
+            'memory_peak_usage' => memory_get_peak_usage(),
             'exception' => $this->exception === null ? null : \json_encode([
                     'message' => $this->exception->getMessage(),
-                    'line'    => $this->exception->getLine(),
-                    'code'    => $this->exception->getCode(),
-                    'trace'   => $this->exception->getTrace(),
+                    'line' => $this->exception->getLine(),
+                    'code' => $this->exception->getCode(),
+                    'trace' => $this->exception->getTrace(),
                 ]
             ),
 
-            'task_id'       => $this->task->getTaskId(),
-            'recu_id'       => $this->task->getRecurringId(),
-            'identifier'    => $this->task->getIdentifier(),
-            'task'          => $this->task->getTask(),
-            'data'          => $this->task->getData(),
-            'output'        => $this->getOutput(),
-            'request_uuid'  => $this->task->getRequestUuid(),
-            'priority'      => $this->task->getPriority(),
-            'status'        => $this->task->getStatus(),
-            'ts_created'    => $this->task->getTsCreated(),
-            'ts_started'    => $this->task->getTsStarted(),
-            'exec_time'     => $this->task->getExecTime(),
-            'exec_time_ms'  => (int) ($this->task->getExecTime() * 1000),
+            'task_id' => $this->task->getTaskId(),
+            'recu_id' => $this->task->getRecurringId(),
+            'identifier' => $this->task->getIdentifier(),
+            'task' => $this->task->getTask(),
+            'data' => $this->task->getData(),
+            'output' => $this->getOutput(),
+            'request_uuid' => $this->task->getRequestUuid(),
+            'priority' => $this->task->getPriority(),
+            'status' => $this->task->getStatus(),
+            'ts_created' => $this->task->getTsCreated(),
+            'ts_started' => $this->task->getTsStarted(),
+            'exec_time' => $this->task->getExecTime(),
+            'exec_time_ms' => (int)($this->task->getExecTime() * 1000),
             'started_count' => $this->task->getStartedCount(),
-            'php_version'   => str_replace(PHP_EXTRA_VERSION, '', PHP_VERSION),
-            'app_version'   => $this->getAppVersionNumber(),
-            'queue_source'  => method_exists($this->task, 'getQueueSource')
+            'php_version' => str_replace(PHP_EXTRA_VERSION, '', PHP_VERSION),
+            'app_version' => $this->getAppVersionNumber(),
+            'queue_source' => method_exists($this->task, 'getQueueSource')
                 ? $this->task->getQueueSource() : null,
         ];
+
+        $rawData += $this->getCpuLoad();
 
         if ($this->profiler) {
             $rawData += $this->profiler->getProfilerSummary();

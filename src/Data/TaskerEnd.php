@@ -15,7 +15,7 @@ class TaskerEnd extends LoggerAbstract
      */
     public function getRawData()
     {
-        return [
+        $rawData = [
             'id'                 => $this->getId(),
             'type'               => $this->type,
             'exec_time'          => $this->getElapsedTime(),
@@ -23,6 +23,10 @@ class TaskerEnd extends LoggerAbstract
             'php_version'        => str_replace(PHP_EXTRA_VERSION, '', PHP_VERSION),
             'app_version'        => $this->getAppVersionNumber(),
         ];
+
+        $rawData += $this->getCpuLoad();
+
+        return $rawData;
     }
 
     /**
