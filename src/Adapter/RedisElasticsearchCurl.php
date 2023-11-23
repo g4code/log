@@ -2,7 +2,7 @@
 
 namespace G4\Log\Adapter;
 
-use G4\ValueObject\Uuid;
+use G4\Log\Consts\RedisToElasticsearchConstants;
 
 class RedisElasticsearchCurl
 {
@@ -158,7 +158,7 @@ class RedisElasticsearchCurl
         }
 
         //defaultES should never happen, but just in case it does, in the following step we consider it to be <es6 (before es version 6)
-        $esVersion = array_key_exists($hostId, $this->versions) ? $this->versions[$hostId] : 'defaultES';
+        $esVersion = array_key_exists($hostId, $this->versions) ? $this->versions[$hostId] : RedisToElasticsearchConstants::DEFAULT_ES;
 
         return RedisToEsBuildBulkData::buildBulkData($data, $esVersion);
     }
