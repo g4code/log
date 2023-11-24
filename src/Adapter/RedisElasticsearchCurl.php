@@ -47,6 +47,7 @@ class RedisElasticsearchCurl
             }
         } else {
             foreach ($this->hosts as $host) {
+                $host = $this->cleanHost($host);
                 $countInfo .= sprintf("[log] |- ES Cluster: %s, count: 0\n", $host);
             }
         }
@@ -71,6 +72,11 @@ class RedisElasticsearchCurl
             $host,
             self::BULK
         ]);
+    }
+
+    private function cleanHost($url)
+    {
+        return parse_url($url, PHP_URL_HOST) . ':' . parse_url($url, PHP_URL_PORT);
     }
 
     private function buildHosts(array $hosts)
@@ -122,7 +128,7 @@ class RedisElasticsearchCurl
         }
 
         $data = json_decode($response,true);
-        $host = parse_url($url, PHP_URL_HOST) . ':' . parse_url($url, PHP_URL_PORT);
+        $host = $this->cleanHost($url);
         $this->counts[$host] = [
             'count' => isset($data['items']) ? count($data['items']) : 0,
             'exec_time' => ceil($duration * 1000),
