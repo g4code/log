@@ -127,7 +127,7 @@ abstract class LoggerAbstract
      * @param string $logLevel
      * @return $this
      */
-    public function setLogLevel(string $logLevel)
+    public function setLogLevel($logLevel)
     {
         $this->logLevel = $logLevel;
         return $this;
