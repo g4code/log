@@ -14,6 +14,8 @@ class Logger
 
     const DEFAULT_LINE = 2;
 
+    const INDEX_LEVEL_THREE = 3;
+
     /**
      * @var AdapterInterface
      */
@@ -46,6 +48,7 @@ class Logger
      */
     public function log(\G4\Log\Data\LoggerAbstract $data, $logLevel = LoggingLevels::DEBUG)
     {
+
         $data->setExcluded($this->exclude);
         $data->setAppVersionNumber($this->version);
         $data->setLogLevel($logLevel);
@@ -99,7 +102,7 @@ class Logger
      * @param int $index
      * @return void
      */
-    public function emergency($var, $tag = false, $index = self::DEFAULT_LINE)
+    public function emergency($var, $tag = false, $index = self::INDEX_LEVEL_THREE)
     {
         $this->runtimeLog($var, $tag, $index, LoggingLevels::EMERGENCY);
     }
@@ -110,7 +113,7 @@ class Logger
      * @param int $index
      * @return void
      */
-    public function alert($var, $tag = false, $index = self::DEFAULT_LINE)
+    public function alert($var, $tag = false, $index = self::INDEX_LEVEL_THREE)
     {
         $this->runtimeLog($var, $tag, $index, LoggingLevels::ALERT);
     }
@@ -121,7 +124,7 @@ class Logger
      * @param int $index
      * @return void
      */
-    public function critical($var, $tag = false, $index = self::DEFAULT_LINE)
+    public function critical($var, $tag = false, $index = self::INDEX_LEVEL_THREE)
     {
         $this->runtimeLog($var, $tag, $index, LoggingLevels::CRITICAL);
     }
@@ -132,7 +135,7 @@ class Logger
      * @param int $index
      * @return void
      */
-    public function error($var, $tag = false, $index = self::DEFAULT_LINE)
+    public function error($var, $tag = false, $index = self::INDEX_LEVEL_THREE)
     {
         $this->runtimeLog($var, $tag, $index, LoggingLevels::ERROR);
     }
@@ -143,7 +146,7 @@ class Logger
      * @param int $index
      * @return void
      */
-    public function warning($var, $tag = false, $index = self::DEFAULT_LINE)
+    public function warning($var, $tag = false, $index = self::INDEX_LEVEL_THREE)
     {
         $this->runtimeLog($var, $tag, $index, LoggingLevels::WARNING);
     }
@@ -154,7 +157,7 @@ class Logger
      * @param int $index
      * @return void
      */
-    public function notice($var, $tag = false, $index = self::DEFAULT_LINE)
+    public function notice($var, $tag = false, $index = self::INDEX_LEVEL_THREE)
     {
         $this->runtimeLog($var, $tag, $index, LoggingLevels::NOTICE);
     }
@@ -165,7 +168,7 @@ class Logger
      * @param int $index
      * @return void
      */
-    public function info($var, $tag = false, $index = self::DEFAULT_LINE)
+    public function info($var, $tag = false, $index = self::INDEX_LEVEL_THREE)
     {
         $this->runtimeLog($var, $tag, $index, LoggingLevels::INFO);
     }
