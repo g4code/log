@@ -20,12 +20,12 @@ class Response extends RequestResponseAbstarct
         $resource   = $this->getApplication()->getResponse()->getResponseObject();
         $appMessage = $this->getApplication()->getResponse()->getResponseMessage();
         $httpCode   = $this->getApplication()->getResponse()->getHttpResponseCode();
+        $responseElapsedTime = (int) ($this->getElapsedTime() * 1000);
 
         $profilerOutput = $this->profiler
-            ? $this->profiler->getProfilerOutput($httpCode, $this->getDbProfilerRequestParam())
+            ? $this->profiler->getProfilerOutput($httpCode, $this->getDbProfilerRequestParam(), $responseElapsedTime)
             : [];
 
-        $responseElapsedTimeInMs = (int) ($this->getElapsedTime() * 1000);
 
         $rawData = [
             'id'           => $this->getId(),
@@ -35,14 +35,10 @@ class Response extends RequestResponseAbstarct
             'app_code'     => $this->getApplication()->getResponse()->getApplicationResponseCode(),
             'app_message'  => empty($appMessage) ? null : \json_encode($appMessage),
             'elapsed_time' => $this->getElapsedTime(),
-            'elapsed_time_ms' => $responseElapsedTimeInMs,
+            'elapsed_time_ms' => $responseElapsedTime,
             'profiler'     => \json_encode($profilerOutput),
             'app_version'  => $this->getAppVersionNumber(),
         ];
-
-        if($this->profiler->shouldLogProfilerOutput($responseElapsedTimeInMs)){
-            $rawData['profiler'] =  \json_encode($this->profiler->getProfilerOutput($httpCode));
-        }
 
         $rawData += $this->getCpuLoad();
 
