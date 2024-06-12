@@ -41,6 +41,8 @@ class RedisToElastic
      */
     private $prettyPrintFields;
 
+    private $truncatedFields;
+
     /**
      * RedisToElastic constructor.
      *
@@ -54,11 +56,18 @@ class RedisToElastic
         $this->elasticClient    = $elasticClient;
         $this->batchsize        = $batchsize;
         $this->prettyPrintFields = [];
+        $this->truncatedFields = [];
     }
 
     public function setPrettyPrintFields(array $fields)
     {
         $this->prettyPrintFields = $fields;
+        return $this;
+    }
+
+    public function setTruncatedFields(array $fields)
+    {
+        $this->truncatedFields = $fields;
         return $this;
     }
 
@@ -68,9 +77,11 @@ class RedisToElastic
         $this->countFromRedis = count($data);
         if (!empty($data)) {
             foreach ($data as $key => $log) {
+                $docLength = strlen($log);
                 $logData = json_decode($log, 1);
-                $this->data[$key] = $this->prettify($logData);
-                $this->data[$key]['doc_length'] = strlen($log);
+                $prettyLogData = $this->prettify($logData);
+                $this->data[$key] = $this->truncateLongFields($prettyLogData);
+                $this->data[$key]['doc_length'] = $docLength;
             }
         }
 
@@ -81,6 +92,12 @@ class RedisToElastic
     {
         return (new PrettifyJson($this->redisClient->getKey(), $this->prettyPrintFields))
             ->prettify($logData);
+    }
+
+    private function truncateLongFields(array $logData)
+    {
+        return (new FieldsTruncator($this->redisClient->getKey(), $this->truncatedFields))
+            ->truncate($logData);
     }
 
     public function insertIntoES()

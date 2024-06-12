@@ -3,9 +3,8 @@
 namespace Adapter;
 
 use G4\Log\Adapter\RedisToEsBuildBulkData;
-use PHPUnit_Framework_TestCase;
 
-class RedisToEsBuildBulkDataTest extends PHPUnit_Framework_TestCase
+class RedisToEsBuildBulkDataTest extends \PHPUnit\Framework\TestCase
 {
     public function testEmptyData()
     {
@@ -26,7 +25,7 @@ class RedisToEsBuildBulkDataTest extends PHPUnit_Framework_TestCase
         ob_end_clean();
 
         $this->assertEquals("\n", $result);
-        $this->assertContains("Undefined _index or _type", $output);
+        $this->assertStringContainsString("Undefined _index or _type", $output);
     }
 
     public function testMissingType()
@@ -41,7 +40,7 @@ class RedisToEsBuildBulkDataTest extends PHPUnit_Framework_TestCase
         ob_end_clean();
 
         $this->assertEquals("\n", $result);
-        $this->assertContains("Undefined _index or _type", $output);
+        $this->assertStringContainsString("Undefined _index or _type", $output);
     }
 
     /** @dataProvider dataFromRedis */

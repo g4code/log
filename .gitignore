@@ -1,6 +1,8 @@
 # Add your rules here #
 #######################
 composer.lock
+.phpunit.result.cache
+test/.phpunit.result.cache
 
 # Default GIT ignore rules #
 ############################
