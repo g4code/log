@@ -3,9 +3,8 @@
 namespace Data;
 
 use G4\Log\Data\Exclude;
-use PHPUnit_Framework_TestCase;
 
-class ExcludeTest extends PHPUnit_Framework_TestCase
+class ExcludeTest extends \PHPUnit\Framework\TestCase
 {
     public function testGetExclude()
     {
