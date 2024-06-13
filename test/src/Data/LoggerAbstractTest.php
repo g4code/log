@@ -6,9 +6,8 @@ namespace Data;
 use G4\CleanCore\Application;
 use G4\Log\Data\Exclude;
 use G4\Log\Data\Response;
-use PHPUnit_Framework_TestCase;
 
-class LoggerAbstractTest extends PHPUnit_Framework_TestCase
+class LoggerAbstractTest extends \PHPUnit\Framework\TestCase
 {
     private $app;
     private $profiler;
@@ -17,10 +16,12 @@ class LoggerAbstractTest extends PHPUnit_Framework_TestCase
     const EXCLUDED = 'EXCLUDED';
 
 
-    protected function setUp()
+    protected function setUp(): void
     {
+        $_SERVER['REQUEST_METHOD'] = null;
         $this->profiler = $this->createMock(\G4\Runner\Profiler::class);
         $this->profiler->method('getProfilerOutput')->willReturn([]);
+        $this->profiler->method('getProfilerSummary')->willReturn([]);
 
         $this->request = new \G4\CleanCore\Request\Request();
         $response = new \G4\CleanCore\Response\Response();
