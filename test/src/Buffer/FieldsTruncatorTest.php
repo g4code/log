@@ -48,6 +48,8 @@ class FieldsTruncatorTest extends \PHPUnit\Framework\TestCase
             'app_message' => str_repeat('x', 200),
             'resource' => str_repeat('y', 200),
             'params' => str_repeat('z', 200),
+            'code' => 201,
+            'elapsed_time' => 1.05,
         ];
 
         $suffix = '...[truncated, change the truncated_fields.enable=1]';
@@ -55,6 +57,8 @@ class FieldsTruncatorTest extends \PHPUnit\Framework\TestCase
             'app_message' => str_repeat('x', 200),
             'resource' => str_repeat('y', 50) . $suffix,
             'params' => str_repeat('z', 50) . $suffix,
+            'code' => 201,
+            'elapsed_time' => 1.05,
         ];
 
         self::assertSame($expected, $fieldsTruncator->truncate($logData));

@@ -58,7 +58,12 @@ class FieldsTruncator
         return (bool) $this->config[self::TRUNCATE_ENABLED];
     }
 
-    private function truncateValue(string $fieldName, ?string $value):? string
+    /**
+     * @param string $fieldName
+     * @param mixed $value
+     * @return mixed
+     */
+    private function truncateValue(string $fieldName, $value)
     {
         if (!$this->shouldTruncateField($fieldName) || !$value) {
             return $value;
@@ -74,6 +79,6 @@ class FieldsTruncator
         if (!isset($this->config[$this->logType])) {
             return true;
         }
-        return in_array($fieldName, $this->config[$this->logType]);
+        return in_array($fieldName, $this->config[$this->logType], true);
     }
 }
