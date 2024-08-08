@@ -115,7 +115,7 @@ class RedisElasticsearchCurl
 
         curl_close($ch);
 
-        if (isset($info['http_code']) && (int) $info['http_code'] > 299) {
+        if (isset($info['http_code']) && ((int) $info['http_code'] === 0 || (int) $info['http_code'] > 299)) {
             $message = sprintf(
                 "Unexpected response code:%s from ES. More info: %s. Body length: %s, Document %s... Response: %s",
                 $info['http_code'],
