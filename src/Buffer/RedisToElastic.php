@@ -82,6 +82,7 @@ class RedisToElastic
                 $prettyLogData = $this->prettify($logData);
                 $this->data[$key] = $this->truncateLongFields($prettyLogData);
                 $this->data[$key]['doc_length'] = $docLength;
+                $this->data[$key]['doc_length_real'] = strlen(json_encode($this->data[$key]));
             }
         }
 
