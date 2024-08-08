@@ -72,12 +72,13 @@ class Request extends RequestResponseAbstarct
     {
         \parse_str(\trim(\file_get_contents('php://input')), $rawBodyParams);
 
-        foreach($this->paramsToObfuscate as $key) {
-            if (isset($params[$key])) {
-                $params[$key] = '*****';
+        foreach($this->paramsToObfuscate as $key => $value) {
+            $paramIndex = is_int($key) ? $value : $key;
+            if (isset($params[$paramIndex])) {
+                $params[$paramIndex] = is_callable($value) ? $value($params[$paramIndex]) : '*****';
             }
-            if (is_array($rawBodyParams) && \array_key_exists($key, $rawBodyParams)) {
-                $rawBodyParams[$key] = '_obfuscated_';
+            if (is_array($rawBodyParams) && \array_key_exists($paramIndex, $rawBodyParams)) {
+                $rawBodyParams[$paramIndex] = is_callable($value) ? $value($rawBodyParams[$paramIndex]) : '__obfuscated__';
             }
         }
 
