@@ -66,6 +66,9 @@ class RabbitmqMessages implements MessagesMapInterface
                 case $this->isFromChatAppAndAllowed():
                     $this->chatAppMapping();
                     break;
+                case $this->isFromSpamScamAndAllowed():
+                    $this->spamScamMapping();
+                    break;
                 default:
                     $this->sourceAllowed = false;
                     break;
@@ -97,6 +100,11 @@ class RabbitmqMessages implements MessagesMapInterface
     {
         return $this->inAllowedSources(RabbitmqConsts::CHAT_APP) && $this->sourceMatch(RabbitmqConsts::CHAT_APP);
     }
+
+    private function isFromSpamScamAndAllowed()
+    {
+        return $this->inAllowedSources(RabbitmqConsts::SPAM_SCAM) && $this->sourceMatch(RabbitmqConsts::SPAM_SCAM);
+    }
     
     private function coreMapping()
     {
@@ -117,5 +125,12 @@ class RabbitmqMessages implements MessagesMapInterface
         $this->source           = RabbitmqConsts::CHAT_APP;
         $this->userSender       = $this->message_decoded[RabbitmqConsts::CHAT_APP_SENDER];
         $this->userReceiver     = $this->message_decoded[RabbitmqConsts::CHAT_APP_RECEIVER];
+    }
+
+    private function spamScamMapping()
+    {
+        $this->source           = RabbitmqConsts::SPAM_SCAM;
+        $this->userSender       = $this->message_decoded[RabbitmqConsts::SPAM_SCAM_SENDER];
+        $this->userReceiver     = $this->message_decoded[RabbitmqConsts::SPAM_SCAM_RECEIVER];
     }
 }
