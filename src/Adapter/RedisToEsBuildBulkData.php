@@ -11,7 +11,7 @@ class RedisToEsBuildBulkData
      * @param array $data
      * @param string $esVersion
      */
-    public static function buildBulkData($data, $esVersion)
+    public static function buildBulkData($data, $esVersion, array $dailyIndices=[])
     {
         $bulkData = [];
         foreach ($data as $log) {
@@ -29,10 +29,23 @@ class RedisToEsBuildBulkData
 
             unset($log[Consts::_INDEX], $log[Consts::_TYPE], $log[Consts::__METHOD]);
 
+            // rename indices to a daily
+            foreach ($dailyIndices as $dailyIndex)
+            {
+                if (strpos($index, $dailyIndex) === 0) {
+                    try {
+                        $index .= '-' . (new \DateTime($log['datetime']))->format('d');
+                    } catch (\Exception $e) {
+                        printf("Malformed date '%s'?\n", $log['datetime']);
+                    }
+                    break;
+                }
+            }
+
             $header = [
-                        Consts::_INDEX => $index,
-                        Consts::_ID => $id
-                    ];
+                Consts::_INDEX => $index,
+                Consts::_ID => $id,
+            ];
 
             $body = null;
 

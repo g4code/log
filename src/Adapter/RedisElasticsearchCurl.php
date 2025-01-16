@@ -27,6 +27,11 @@ class RedisElasticsearchCurl
     private $counts;
 
     /**
+     * @var array
+     */
+    private $dailyIndices = [];
+
+    /**
      * RedisElasticsearchCurl constructor.
      *
      * @param array $hosts
@@ -36,6 +41,11 @@ class RedisElasticsearchCurl
     {
         $this->hosts = $this->buildHosts($hosts);
         $this->versions = array_values($versions);
+    }
+
+    public function setDailyIndices(array $dailyIndices = [])
+    {
+        $this->dailyIndices = $dailyIndices;
     }
 
     public function getCountInfo()
@@ -70,7 +80,7 @@ class RedisElasticsearchCurl
     {
         return join('/', [
             $host,
-            self::BULK
+            self::BULK,
         ]);
     }
 
@@ -105,7 +115,7 @@ class RedisElasticsearchCurl
             CURLOPT_URL            => $url,
             CURLOPT_HTTPHEADER     => ['Content-Type: application/json'],
             CURLOPT_SSL_VERIFYHOST =>  0,
-            CURLOPT_SSL_VERIFYPEER =>  0
+            CURLOPT_SSL_VERIFYPEER =>  0,
         ]);
         $start = microtime(true);
         $response = curl_exec($ch);
@@ -166,6 +176,6 @@ class RedisElasticsearchCurl
         //defaultES should never happen, but just in case it does, in the following step we consider it to be <es6 (before es version 6)
         $esVersion = array_key_exists($hostId, $this->versions) ? $this->versions[$hostId] : RedisToElasticsearchConstants::DEFAULT_ES;
 
-        return RedisToEsBuildBulkData::buildBulkData($data, $esVersion);
+        return RedisToEsBuildBulkData::buildBulkData($data, $esVersion, $this->dailyIndices);
     }
 }
