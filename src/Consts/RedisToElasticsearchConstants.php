@@ -6,7 +6,7 @@ class RedisToElasticsearchConstants
 {
     //es versions
 
-    const DEFAULT_ES            = 'defaultES';
+    const DEFAULT_ES            = 'es8';
     const ES6                   = 'es6';
     const ES7                   = 'es7';
     const ES8                   = 'es8';
