@@ -15,9 +15,15 @@ class FieldsTruncatorTest extends \PHPUnit\Framework\TestCase
             'enabled' => 1,
             'truncate_above' => 100,
             'truncate_to' => 50,
+            'nd_test' => [
+                'app_message',
+                'code',
+                'params',
+            ],
             'nd_requests' => [
                 'resource',
                 'params',
+                'profiler',
             ],
         ];
     }
@@ -38,7 +44,17 @@ class FieldsTruncatorTest extends \PHPUnit\Framework\TestCase
         $fieldsTruncator = new FieldsTruncator(new StringLiteral('nd_requests'), $this->config);
         self::assertTrue($fieldsTruncator->shouldTruncateField('resource'));
         self::assertTrue($fieldsTruncator->shouldTruncateField('params'));
+        self::assertTrue($fieldsTruncator->shouldTruncateField('profiler'));
         self::assertFalse($fieldsTruncator->shouldTruncateField('app_message'));
+    }
+
+    /**
+     * @dataProvider truncateDataProvider
+     */
+    public function testTruncateField(string $indexName, string $fieldName, bool $expectedResult): void
+    {
+        $truncator = new FieldsTruncator(new StringLiteral($indexName), $this->config);
+        self::assertSame($expectedResult, $truncator->shouldTruncateField($fieldName));
     }
 
     public function testTruncate(): void
@@ -62,5 +78,28 @@ class FieldsTruncatorTest extends \PHPUnit\Framework\TestCase
         ];
 
         self::assertSame($expected, $fieldsTruncator->truncate($logData));
+    }
+
+    public function truncateDataProvider(): array
+    {
+        return [
+            ['nd_requests', 'params', true],
+            ['nd_requests', 'resource', true],
+            ['nd_requests', 'profiler', true],
+            ['nd_requests', 'app_message', false],
+            ['nd_requests', 'app_version', false],
+            ['nd_requests', 'method', false],
+            ['mailer_sent_emails', 'params', false],
+            ['mailer_sent_emails', 'resource', false],
+            ['mailer_sent_emails', 'profiler', false],
+            ['mailer_sent_emails', 'app_message', false],
+            ['mailer_sent_emails', 'app_version', false],
+            ['mailer_sent_emails', 'method', false],
+            ['nd_test', 'profiler', false],
+            ['nd_test', 'resource', false],
+            ['nd_test', 'app_message', true],
+            ['nd_test', 'code', true],
+            ['nd_test', 'params', true],
+        ];
     }
 }
