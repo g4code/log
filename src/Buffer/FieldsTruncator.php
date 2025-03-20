@@ -77,7 +77,7 @@ class FieldsTruncator
     public function shouldTruncateField(string $fieldName): bool
     {
         if (!isset($this->config[$this->logType])) {
-            return true;
+            return false;
         }
         return in_array($fieldName, $this->config[$this->logType], true);
     }
