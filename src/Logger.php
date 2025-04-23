@@ -66,6 +66,11 @@ class Logger
         $this->adapter->saveAppend($data->getRawData());
     }
 
+    public function clearData()
+    {
+        $this->adapter->clearData();
+    }
+
     /**
      * @param mixed $var
      * @param string $tag
