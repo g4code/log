@@ -27,6 +27,17 @@ abstract class AdapterAbstract implements AdapterInterface
         return $this;
     }
 
+    public function clearData()
+    {
+        // clear all log data except keys _index and _type
+        foreach ($this->data as $key => $value) {
+            if (!in_array($key, ['_index', '_type'])) {
+                unset($this->data[$key]);
+            }
+        }
+        return $this;
+    }
+
     public function beLazy()
     {
         $this->shouldBeLazy = true;

@@ -11,6 +11,11 @@ class TaskerStart extends LoggerAbstract
     private $options;
 
     /**
+     * @var string
+     */
+    private $type;
+
+    /**
      * @return array
      */
     public function getRawData()
@@ -18,6 +23,7 @@ class TaskerStart extends LoggerAbstract
         $rawData = [
             'id' => $this->getId(),
             'timestamp' => $this->getJsTimestamp(),
+            'type' => $this->type,
             'datetime' => \date('Y-m-d H:i:s'),
             'options' => \json_encode($this->options),
             'hostname' => \gethostname(),
@@ -39,5 +45,10 @@ class TaskerStart extends LoggerAbstract
     {
         $this->options = $options;
         return $this;
+    }
+
+    public function setType($type)
+    {
+        $this->type = $type;
     }
 }

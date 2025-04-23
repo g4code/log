@@ -58,7 +58,6 @@ class Redis extends AdapterAbstract
         } catch (\Exception $exception) {
             error_log ($exception->getMessage(), 0);
         }
-
     }
 
 

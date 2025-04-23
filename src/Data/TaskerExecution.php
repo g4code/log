@@ -8,7 +8,7 @@ use G4\Runner\Profiler;
 class TaskerExecution extends LoggerAbstract
 {
     const LOG_TYPE = 'execution';
-    const CONTENT_LIMIT = 512;
+    const CONTENT_LIMIT = 30000;
 
     /**
      * @var \G4\Tasker\Model\Domain\Task
@@ -35,41 +35,77 @@ class TaskerExecution extends LoggerAbstract
      */
     private $profiler;
 
+    private $taskFinished = false;
+
+    public function taskStarted()
+    {
+        $this->taskFinished = false;
+    }
+
+    public function taskFinished()
+    {
+        $this->taskFinished = true;
+    }
+
     public function getRawData()
     {
-        $rawData = [
+        $rawData = $this->taskFinished
+            ? $this->getRawDataEnd()
+            : $this->getRawDataStart();
+        return $rawData;
+    }
+
+    private function getRawDataStart()
+    {
+        return [
             'id' => $this->getId(),
             'timestamp' => $this->getJsTimestamp(),
             'hostname' => \gethostname(),
             'pid' => \getmypid(),
             'type' => $this->logType ?: self::LOG_TYPE,
-            'memory_peak_usage' => memory_get_peak_usage(),
-            'exception' => $this->exception === null ? null : \json_encode([
-                    'message' => $this->exception->getMessage(),
-                    'line' => $this->exception->getLine(),
-                    'code' => $this->exception->getCode(),
-                    'trace' => $this->exception->getTrace(),
-                ]
-            ),
-
             'task_id' => $this->task->getTaskId(),
             'recu_id' => $this->task->getRecurringId(),
             'identifier' => $this->task->getIdentifier(),
             'task' => $this->task->getTask(),
             'data' => $this->task->getData(),
-            'output' => $this->getOutput(),
             'request_uuid' => $this->task->getRequestUuid(),
             'priority' => $this->task->getPriority(),
             'status' => $this->task->getStatus(),
             'ts_created' => $this->task->getTsCreated(),
             'ts_started' => $this->task->getTsStarted(),
-            'exec_time' => $this->task->getExecTime(),
-            'exec_time_ms' => (int)($this->task->getExecTime() * 1000),
             'started_count' => $this->task->getStartedCount(),
             'php_version' => str_replace(PHP_EXTRA_VERSION, '', PHP_VERSION),
             'app_version' => $this->getAppVersionNumber(),
             'queue_source' => method_exists($this->task, 'getQueueSource')
                 ? $this->task->getQueueSource() : null,
+        ];
+    }
+
+    private function getRawDataEnd()
+    {
+        $profilerOutput = $this->profiler
+            ? $this->profiler->getTaskerProfilerOutput($this->task->getExecTime())
+            : null;
+
+        $rawData = [
+            'id' => $this->getId(),
+            'ts_finished' => $this->task->getTsFinished(),
+            'memory_peak_usage' => memory_get_peak_usage(),
+            'exception' => $this->exception === null
+                ? null
+                : \json_encode([
+                        'message' => $this->exception->getMessage(),
+                        'line' => $this->exception->getLine(),
+                        'code' => $this->exception->getCode(),
+                        'trace' => $this->exception->getTrace(),
+                    ]
+                ),
+            'output' => $this->getOutput(),
+            'exec_time' => $this->task->getExecTime(),
+            'exec_time_ms' => (int)($this->task->getExecTime() * 1000),
+            'status' => $this->task->getStatus(),
+            'started_count' => $this->task->getStartedCount(),
+            'profiler' => $profilerOutput ? \json_encode($profilerOutput) : null,
         ];
 
         $rawData += $this->getCpuLoad();
@@ -111,6 +147,11 @@ class TaskerExecution extends LoggerAbstract
     {
         $this->profiler = $profiler;
         return $this;
+    }
+
+    public function hasProfiler()
+    {
+        return $this->profiler !== null;
     }
 
     /**
