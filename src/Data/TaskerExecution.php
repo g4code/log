@@ -84,7 +84,7 @@ class TaskerExecution extends LoggerAbstract
     private function getRawDataEnd()
     {
         $profilerOutput = $this->profiler
-            ? $this->profiler->getTaskerProfilerOutput($this->task->getExecTime())
+            ? $this->profiler->getTaskerProfilerOutput($this->task->getStatus(), $this->task->getExecTime())
             : null;
 
         $rawData = [
